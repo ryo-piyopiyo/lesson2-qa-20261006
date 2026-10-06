@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>1次結合と点の行き先｜線形代数学I-a 第２回</title>
+<style>
+:root{--navy:#17354a;--teal:#126e71;--ochre:#a36320;--ink:#203641;--muted:#536970;--line:#d8e2e3;--paper:#fff;--bg:#f3f7f7;--bad:#a73535;--good:#146951;--shadow:0 8px 30px #17354a08;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:var(--ink);background:var(--bg);font-size:16px;line-height:1.75}
+*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer;touch-action:manipulation}button:disabled{cursor:default;opacity:.55}button:focus-visible,input:focus-visible,summary:focus-visible,textarea:focus-visible{outline:3px solid #edbd68;outline-offset:3px}header{border-top:6px solid var(--teal);background:var(--paper);border-bottom:1px solid var(--line)}.header-inner{max-width:1130px;margin:auto;padding:25px 28px 22px}.eyebrow{font-size:.79rem;letter-spacing:.06em;color:var(--teal);font-weight:700;margin:0}.header-row{display:flex;align-items:baseline;gap:15px;justify-content:space-between}h1{font-size:clamp(1.35rem,2.7vw,1.9rem);line-height:1.5;margin:5px 0 7px;color:var(--navy)}.app-number{white-space:nowrap;border:1px solid var(--line);border-radius:99px;padding:2px 12px;font-size:.8rem}.goal{margin:0;color:var(--muted);font-size:.93rem}main{max-width:1130px;margin:24px auto;padding:0 28px 32px}.statusbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-bottom:16px;align-items:center}.badge{display:inline-block;border-radius:5px;background:#e0eeee;color:var(--teal);font-size:.82rem;font-weight:700;padding:3px 10px}.progress{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:.85rem}.dots{display:inline-flex;gap:5px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#d8e2e3}.dot.done{background:var(--teal)}.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:20px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:25px}.work{min-width:0}.graph-panel{min-width:0;padding:18px;position:sticky;top:16px}.section-label{font-size:.78rem;color:var(--teal);font-weight:700;letter-spacing:.04em;margin:0 0 7px}h2{font-size:1.24rem;line-height:1.6;margin:0 0 13px;color:var(--navy)}h3{font-size:.98rem;margin:0 0 7px}.problem{margin:0 0 18px}.math{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.16rem;line-height:1.5}.math-block{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:15px 0}.matrix{display:inline-grid;grid-template-columns:repeat(var(--cols,1),minmax(30px,auto));gap:6px 15px;position:relative;padding:5px 12px;vertical-align:middle;line-height:1.5;text-align:center;margin:0 3px}.matrix:before,.matrix:after{content:"";position:absolute;width:6px;top:0;bottom:0;border:1.6px solid currentColor}.matrix:before{left:0;border-right:0}.matrix:after{right:0;border-left:0}.matrix.input-matrix{gap:7px;padding:7px 12px}.matrix .col1{color:var(--teal)}.matrix .col2{color:var(--ochre)}.entry{display:block;width:90px;min-width:0;min-height:43px;padding:6px 5px;text-align:center;border:1px solid #9bafb5;border-radius:5px;color:var(--ink);background:#fcfefe;font-family:"Cambria Math","Times New Roman",serif;font-size:1.05rem}.entry.invalid{border-color:var(--bad);background:#fff8f7}.entry.correct{border-color:var(--good);background:#f0faf5}.entry:disabled{opacity:1;color:var(--ink);-webkit-text-fill-color:var(--ink)}.equation-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:17px 0}.equation-row .entry{width:78px}.sum-line{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center}.operator{font-family:serif;font-size:1.4rem;padding:0 4px}.answer-label{text-align:center;color:var(--muted);font-size:.8rem;margin-top:4px}.coefficient-row{display:flex;align-items:center;justify-content:center;gap:5px;margin:14px 0;flex-wrap:wrap}.coefficient-row .entry{display:inline-block;width:91px}.coefficient-term{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;flex-wrap:nowrap}.coordinate-row{display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:wrap;margin:16px 0}.coordinate-row .entry{width:107px}.guide{background:#f0f7f7;border-left:3px solid var(--teal);padding:13px 15px;border-radius:0 7px 7px 0;margin:18px 0;font-size:.89rem}.guide p{margin:6px 0}.guide .answer-list{font-family:"Cambria Math","Times New Roman",serif;font-size:1.03rem;overflow-wrap:anywhere}.tiny{font-size:.8rem;color:var(--muted)}.input-help{font-size:.79rem;color:var(--muted);margin:14px 0}.input-help code{font-size:.85rem;background:#eff3f4;padding:2px 4px;border-radius:3px}.primary,.secondary,.text-button{min-height:43px;border-radius:7px;padding:9px 17px;font-weight:700;border:1px solid transparent}.primary{background:var(--teal);color:white}.primary:hover{background:#0a595c}.secondary{background:white;color:var(--teal);border-color:#a2b9bb}.secondary:hover{background:#f1f8f7}.text-button{background:transparent;color:var(--muted);font-weight:500;padding:7px 10px;text-decoration:underline;text-underline-offset:4px;font-size:.86rem}.action-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:15px}.action-row>.primary{flex:1}.help-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;justify-content:flex-start}.feedback{min-height:28px;font-size:.92rem;color:var(--bad);margin:12px 0 0}.feedback.success{color:var(--good)}.success-card{border:1px solid #a5cebc;background:#effaf4;border-radius:9px;padding:14px 16px;margin:15px 0}.success-card strong{font-size:1.55rem;letter-spacing:.03em;color:var(--good)}.success-card p{margin:4px 0 0;font-size:.86rem}.pass-card{background:#f8f3e9;border:1px solid #d9bf91;border-radius:12px;padding:20px 24px;margin:22px 0}.pass-card h2{color:#80511d}.pass-card p{margin:6px 0}.stage-track{display:flex;gap:5px;margin:0 0 17px}.stage-track span{height:4px;flex:1;border-radius:2px;background:#dfe8e8}.stage-track span.done{background:var(--teal)}.stage-track span.current{background:var(--ochre)}.diagram{width:100%;height:auto;display:block;background:#fff;border-radius:6px}.diagram text{font-family:"Yu Gothic",sans-serif;paint-order:stroke;stroke:white;stroke-width:3px;stroke-linejoin:round}.graph-caption{font-size:.82rem;color:var(--muted);margin:5px 0}.legend{display:flex;flex-wrap:wrap;gap:6px 13px;font-size:.8rem;margin:4px 0 12px}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.mapping-summary{background:#f6f8f8;border-radius:7px;padding:10px 13px;font-size:.85rem;margin-top:12px}.mapping-summary p{margin:3px 0}.choice-grid{display:grid;gap:10px;margin:20px 0}.choice{background:#fff;border:1px solid #9bafb5;color:var(--navy);border-radius:8px;min-height:52px;font-family:"Cambria Math","Times New Roman",serif;font-size:1.16rem;padding:10px}.choice:hover{background:#eef7f7}.choice.selected{border:2px solid var(--teal);background:#edf8f6}.record-panel{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 22px}.record-panel summary{cursor:pointer;color:var(--navy);font-weight:700}.record-panel p{font-size:.88rem}.record-actions{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}.record-actions button{font-size:.85rem}.manual-copy{width:100%;min-height:150px;margin-top:10px;border:1px solid #adbcc1;border-radius:7px;padding:10px;font:12px/1.6 monospace}.storage-warning{background:#fff4dd;border:1px solid #dbb971;padding:10px 14px;border-radius:7px;margin-bottom:14px;font-size:.84rem}.submission-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.submission-row p{flex-basis:100%;margin:2px 0;font-size:.85rem}.formula-note{background:#f7f9fa;padding:10px 13px;margin:15px 0;border-radius:6px;font-size:.88rem}.slider-label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;margin:12px 0 4px}.slider-label input{width:100%;accent-color:var(--teal);min-height:34px}.bottom-note{color:var(--muted);font-size:.8rem;margin:15px 2px}.hidden{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}footer{font-size:.75rem;color:var(--muted);margin-top:25px;text-align:center}noscript{display:block;padding:25px}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr)}.graph-panel{position:static}.diagram{max-height:380px}.header-inner{padding:20px}main{padding:0 18px 25px}.header-row{gap:8px}.graph-panel{padding:17px 20px}.panel{padding:21px}}
+@media(max-width:420px){:root{font-size:15px}.header-inner{padding:17px 14px}.header-row{align-items:flex-start;flex-direction:column;gap:2px}.app-number{order:-1;font-size:.72rem}main{padding:0 10px 20px;margin-top:16px}.panel{padding:17px 13px}.matrix.input-matrix{padding:5px 10px;gap:6px}.equation-row .entry{width:61px}.entry{width:76px}.coordinate-row .entry{width:92px}.coefficient-row .entry{width:62px}.equation-row{gap:0}.operator{padding:0 2px}.guide{padding:11px 12px}.primary,.secondary{padding:9px 12px}.record-panel{padding:14px}.pass-card{padding:17px}.input-help{font-size:.78rem}.graph-panel{padding:14px 12px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+.curve-layout{grid-template-columns:minmax(0,1fr)}.curve-panel{position:static;top:auto}.curve-plots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}.curve-plot{min-width:0;margin:0}.curve-plot figcaption{min-height:83px;padding:0 7px 8px}.curve-plot figcaption p{margin:2px 0;color:var(--muted)}.curve-source-title{color:var(--teal)}.curve-image-title{color:var(--ochre)}.curve-panel .diagram{max-height:none}.curve-panel .slider-label{max-width:740px;margin:18px auto 4px}.curve-panel>.tiny{text-align:center}
+@media(max-width:800px){.curve-plots{grid-template-columns:minmax(0,1fr);gap:24px}.curve-plot figcaption{min-height:0;padding-bottom:8px}}
+
+.nvec{font-family:Cambria,"Times New Roman",serif;font-weight:700;font-style:italic}.gvec{position:relative;display:inline-block;font-style:italic;padding-top:.18em}.gvec:before{content:"→";position:absolute;top:-.55em;left:0;width:100%;text-align:center;font-size:.8em}.basis-symbol{white-space:nowrap}.basis-symbol sub{font-size:.7em;vertical-align:sub}.notation-note{font-size:.85rem;margin:12px 0;color:#425c69}.notation-note p{max-width:850px}.component-introduction{margin:18px 0;padding:14px;border:1px solid #c6d8dc;border-radius:8px}.component-introduction summary{font-weight:700;color:#163344}.component-plot{display:block;width:100%;max-width:340px;margin:10px auto}.component-plot text{font:14px Cambria,serif}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><p class="eyebrow">線形代数学I-a · 第２回</p><div class="header-row"><h1 id="app-title"></h1><span class="app-number">アプリ 1</span></div><p class="goal" id="app-goal"></p>
+<details class="notation-note"><summary>幾何ベクトルと成分表示の記号を確認する</summary><p>図の矢印で表す幾何ベクトルを<span class="gvec">v</span>，その成分表示を<span class="nvec">v</span>と書きます．<span class="gvec">v</span> = (<span class="basis-symbol"><span class="gvec">e</span><sub>x</sub></span>, <span class="basis-symbol"><span class="gvec">e</span><sub>y</sub></span>) <span class="nvec">v</span> の係数を並べた列ベクトルが成分表示です．行列を掛ける計算はこの数ベクトルに対して行います．点の位置ベクトルの成分表示には，その点の座標を縦に並べます．</p></details></div></header>
+<main id="main"></main>
+<noscript>このアプリではJavaScriptを有効にしてください．ネット接続は必要ありません．</noscript>
+<script>window.LESSON2_APP_ID=1;</script>
+<script>/* Lesson 2 mathematics and learning records. No DOM or network dependencies. */
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.Lesson2Core=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+'use strict';
+const VERSION='2026-10-03.1',GOOD_MS=1600,SUBMIT_MS=900000;
+const META={
+1:{title:'1次結合と点の行き先',short:'点の行き先',goal:'2本の列をそれぞれ何倍するかを読み取り，行き先の座標を求めよう．',pass:'解説を見ずに3問連続で正解',target:3},
+2:{title:'90度回転を行列で表す',short:'90度回転',goal:'行列の各列と，点 (1,0)，(0,1) の行き先を結び付けよう．',pass:'3題を，それぞれ解説を見ずに最後まで完成',target:3},
+3:{title:'任意角の回転と点の行き先',short:'任意角の回転',goal:'回転の向きと角度を確かめ，回転行列で点の行き先を求めよう．',pass:'3題を，それぞれ解説を見ずに最後まで完成',target:3},
+4:{title:'回転した曲線上の点を求める',short:'曲線の回転',goal:'同じ t を使って回転後の座標を表し，y 軸上に来る点を求めよう．',pass:'2題を，それぞれ解説を見ずに最後まで完成',target:2}};
+function parseNumber(input){
+ if(typeof input!=='string'||input.length>120)throw Error('短い数式で入力してください．');
+ let s=input.trim().normalize('NFKC').replace(/[−–—]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/\s+/g,'').replace(/sqrt/gi,'√');
+ if(!s)throw Error('すべての欄に数を入力してください．');
+ const raw=[];let i=0;
+ while(i<s.length){const ch=s[i];if(/[0-9.]/.test(ch)){const m=s.slice(i).match(/^(?:\d+(?:\.\d*)?|\.\d+)/);if(!m)throw Error('小数点の前後に数を入力してください．');raw.push({type:'n',value:Number(m[0])});i+=m[0].length;}else if('+-*/()√'.includes(ch)){raw.push({type:ch});i++;}else throw Error('数・分数・四則演算・括弧・√を使ってください．');}
+ if(raw.length>80)throw Error('数式が長すぎます．');
+ const tokens=[];
+ for(let j=0;j<raw.length;j++){const prev=raw[j-1],tok=raw[j];if(prev&&(prev.type==='n'||prev.type===')')&&['(','√','n'].includes(tok.type)){if(prev.type==='n'&&tok.type==='n')throw Error('数の間に演算記号を入れてください．');tokens.push({type:'*'});}tokens.push(tok);}
+ let p=0;
+ function atom(depth){if(depth>24)throw Error('括弧が深すぎます．');const t=tokens[p++];if(!t)throw Error('数式を最後まで入力してください．');if(t.type==='n')return t.value;if(t.type==='+')return atom(depth+1);if(t.type==='-')return -atom(depth+1);if(t.type==='√'){const n=atom(depth+1);if(n<0)throw Error('根号の中は0以上の数にしてください．');return Math.sqrt(n);}if(t.type==='('){const n=add(depth+1);if(!tokens[p]||tokens[p++].type!==')')throw Error('括弧を閉じてください．');return n;}throw Error('数式の書き方を確かめてください．');}
+ function mul(depth){let n=atom(depth);while(tokens[p]&&['*','/'].includes(tokens[p].type)){const op=tokens[p++].type,b=atom(depth);if(op==='/'&&b===0)throw Error('0では割れません．');n=op==='*'?n*b:n/b;}return n;}
+ function add(depth){let n=mul(depth);while(tokens[p]&&['+','-'].includes(tokens[p].type)){const op=tokens[p++].type,b=mul(depth);n=op==='+'?n+b:n-b;}return n;}
+ const result=add(0);if(p!==tokens.length||!Number.isFinite(result)||Math.abs(result)>1e10)throw Error('数式を確かめてください．');return result;
+}
+const clean=n=>Math.abs(n)<1e-12?0:n;
+const near=(a,b)=>Number.isFinite(a)&&Math.abs(a-b)<=1e-7*Math.max(1,Math.abs(b));
+function exact(n){n=clean(n);if(Number.isInteger(n))return String(n);for(let d=1;d<=12;d++)if(near(n*d,Math.round(n*d)))return d===1?String(Math.round(n*d)):Math.round(n*d)+'/'+d;for(const rad of [2,3])for(let d=1;d<=12;d++){const a=Math.round(n*d/Math.sqrt(rad));if(a&&near(n,a*Math.sqrt(rad)/d))return(a===-1?'-':a===1?'':a+'')+'√'+rad+(d===1?'':'/'+d);}return String(Math.round(n*1e9)/1e9);}
+function rotation(deg){const r=deg*Math.PI/180,c=clean(Math.cos(r)),s=clean(Math.sin(r));return[c,-s,s,c];}
+function apply(A,p){return[clean(A[0]*p[0]+A[1]*p[1]),clean(A[2]*p[0]+A[3]*p[1])];}
+function rotationPointText(deg,p){const A=rotation(deg);return[0,1].map(row=>{const a=A[row*2]*p[0],b=A[row*2+1]*p[1];if(near(a,0))return exact(b);if(near(b,0))return exact(a);const sum=exact(a+b);if(/^-?(?:\d+(?:\/\d+)?|(?:\d+)?√[23](?:\/\d+)?)$/.test(sum))return sum;return exact(a)+(b<0?'−':'+')+exact(Math.abs(b));});}
+function taskFor(app,index=0,tutorial=false){
+ app=Number(app);index=Math.max(0,Math.floor(index));if(!META[app])throw Error('Unknown app');
+ const id=(tutorial?'example':'practice')+'-'+app+'-'+index;
+ if(app===1){const pool=[
+ {A:[2,-1,1,1],points:[{name:'P',p:[-1,2]}]},{A:[2,-1,1,1],points:[{name:'Q',p:[1.5,-2]}]},
+ {A:[3,1,-1,2],points:[{name:'R',p:[-2,.5]}]},{A:[1,-2,3,1],points:[{name:'P',p:[2,-1.5]}]},
+ {A:[2,4,3,1],points:[{name:'Q',p:[1,2]}]},{A:[-1,2,2,1],points:[{name:'R',p:[-.5,3]}]},
+ {A:[2,-1,1,1],points:[{name:'P',p:[2.5,-1]}]},{A:[1,3,-2,1],points:[{name:'Q',p:[-2,-.5]}]}];
+ return{app,id,tutorial,A:[...(tutorial?[2,-1,1,1]:pool[index%pool.length].A)],points:tutorial?[{name:'Q',p:[3,.5]},{name:'R',p:[4,-1]}]:pool[index%pool.length].points.map(p=>({...p,p:[...p.p]}))};}
+ if(app===2){const pairs=[[[3,-2],[-1,-3]],[[1.5,3],[-2,.5]],[[-4,1],[2,-3]],[[2.5,-1],[-3,-2]],[[1,-4],[-.5,2]]];return{app,id,tutorial,angle:90,A:rotation(90),points:(tutorial?[[2,-1],[-3,2]]:pairs[index%pairs.length]).map((p,i)=>({name:i?'Q':'P',p}))};}
+ if(app===3){const values=[[60,[4,-2]],[-30,[-2,6]],[45,[2,-4]],[120,[4,2]],[-60,[-6,2]],[150,[2,-6]],[30,[4,-6]]];const[angle,p]=tutorial?[30,[6,4]]:values[index%values.length];return{app,id,tutorial,angle,A:rotation(angle),points:[{name:'P',p}]};}
+ const values=[[2,30],[1,60],[.5,-30],[2,-60],[.5,60],[1,-30]];const[k,angle]=tutorial?[1,30]:values[index%values.length];return{app,id,tutorial,k,angle,A:rotation(angle)};
+}
+function stagesFor(task){
+ const{app,A,points,angle,k}=task,stages=[];
+ function push(s){stages.push({...s,id:task.id+'-'+stages.length});}
+ if(app===1){for(const point of points){const[x,y]=point.p,scaled=[A[0]*x,A[2]*x,A[1]*y,A[3]*y],out=apply(A,point.p);push({kind:'columns',title:point.name+' の行き先',point,expected:[...scaled,...out],answerText:[...scaled,...out].map(exact),labels:['第1列をx倍したベクトルの第1成分','第1列をx倍したベクトルの第2成分','第2列をy倍したベクトルの第1成分','第2列をy倍したベクトルの第2成分',point.name+'′のx座標',point.name+'′のy座標'],hint:'第1列を入力の x 座標倍，第2列を入力の y 座標倍してから，できた2本の列ベクトルを足します．',explanation:'第1列を '+exact(x)+' 倍すると ('+scaled.slice(0,2).map(exact).join(', ')+')，第2列を '+exact(y)+' 倍すると ('+scaled.slice(2).map(exact).join(', ')+') です．足すと '+point.name+'′('+out.map(exact).join(', ')+') となります．'});}return stages;}
+ if(app===2||app===3){
+ push({kind:'matrix',title:app===2?'90度回転の行列':'回転行列を作る',expected:A,answerText:A.map(exact),labels:['回転行列の1行1列','回転行列の1行2列','回転行列の2行1列','回転行列の2行2列'],hint:app===2?'図で (1,0)，(0,1) を原点のまわりに反時計回りに90度回します．それぞれの行き先を第1列，第2列に並べます．':'第1列は (cos θ, sin θ)，第2列は (−sin θ, cos θ) です．負の角では sin θ の符号にも注意しましょう．',explanation:'R = [ '+exact(A[0])+', '+exact(A[1])+' ; '+exact(A[2])+', '+exact(A[3])+' ] です．第1列は (1,0) の行き先，第2列は (0,1) の行き先を表します．'});
+ for(const point of points)push({kind:'point',title:point.name+' の行き先',point,expected:apply(A,point.p),answerText:rotationPointText(angle,point.p),labels:[point.name+'′のx座標',point.name+'′のy座標'],hint:'入力の '+point.name+' の x 座標を第1列に，y 座標を第2列に掛けて足します．',explanation:point.name+'′ = ('+rotationPointText(angle,point.p).join(', ')+') です．第1列 × ('+exact(point.p[0])+') と第2列 × ('+exact(point.p[1])+') を足します．'});return stages;}
+ const c=A[0],s=A[2],coeff=[c,-k*s,s,k*c],nonzero=c/(k*s),height=c/(k*s*s);
+ push({kind:'coefficients',title:'回転後の座標を t で表す',expected:coeff,answerText:coeff.map(exact),labels:['x′のtの係数','x′のt二乗の係数','y′のtの係数','y′のt二乗の係数'],hint:'曲線上の点の x 座標は t，y 座標は ('+exact(k)+')t² です．行列の第1列に t を，第2列に ('+exact(k)+')t² を掛けて足します．',explanation:'x′(t) = ('+exact(coeff[0])+')t + ('+exact(coeff[1])+')t²，y′(t) = ('+exact(coeff[2])+')t + ('+exact(coeff[3])+')t² です．同じ t が，同じ点の x′ と y′ を表します．'});
+ push({kind:'choice',title:'y 軸上にあるための条件',options:['x′(t) = 0','y′(t) = 0','x′(t) = y′(t)'],expected:[0],answerText:['x′(t) = 0'],labels:['y軸上にあるための条件'],hint:'y 軸上の点は，横方向の座標が0です．',explanation:'y 軸上の条件は x′(t)=0 です．したがって t('+exact(c)+' − ('+exact(k*s)+')t)=0 を解きます．'});
+ push({kind:'root',title:'y 軸上に来るときの t',expected:[nonzero],answerText:[exact(nonzero)],labels:['0でない方のtの値'],hint:'x′(t) の式で t をくくります．t=0 のほかに，括弧の中が0になる t を求めます．',explanation:'t=0 または t='+exact(nonzero)+' です．t=0 も落とさないようにしましょう．'});
+ push({kind:'intersections',title:'2つの共有点の座標',expected:[0,0,0,height],answerText:[0,0,0,height].map(exact),labels:['t=0のときのx′','t=0のときのy′','0でないtのときのx′','0でないtのときのy′'],hint:'求めた2つの t を，x′(t) と y′(t) の両方へ代入します．t 自体は共有点の y 座標ではありません．',explanation:'t=0 のとき (0,0)，t='+exact(nonzero)+' のとき (0,'+exact(height)+') です．パラメータ t と，回転後の座標を区別して確かめましょう．'});
+ return stages;
+}
+function checkStage(stage,strings){try{if(!Array.isArray(strings)||strings.length!==stage.expected.length)throw Error('すべての欄に入力してください．');const values=strings.map(s=>parseNumber(String(s)));return{valid:true,correct:values.every((v,i)=>near(v,stage.expected[i])),values,error:null};}catch(err){return{valid:false,correct:false,values:[],error:err.message};}}
+function createState(app,now=Date.now()){return{schema:1,version:VERSION,app:Number(app),sessionId:'l2-'+app+'-'+now+'-'+Math.random().toString(36).slice(2,10),started:now,mode:'tutorial',index:0,stage:0,status:'working',inputs:[],shownAt:now,lastAnsweredAt:null,taskAssisted:false,stageHint:false,stageSolution:false,streak:0,maxStreak:0,completedTasks:[],passedAt:null,events:[],resume:null,graphT:0};}
+function currentTask(state){return taskFor(state.app,state.index,state.mode!=='practice');}
+function currentStage(state){return stagesFor(currentTask(state))[state.stage];}
+function log(state,type,data={},now=Date.now()){state.events.push({type,at:new Date(now).toISOString(),...data});}
+function recordAnswer(state,stage,strings,now=Date.now()){
+ if(state.status!=='working')return{valid:false,correct:false,error:'次の問題を待っています．'};
+ const checked=checkStage(stage,strings);if(!checked.valid)return checked;
+ const task=currentTask(state);
+ log(state,state.mode==='practice'?'answer':'tutorial-answer',{mode:state.mode,task,stage:stage.kind,stageIndex:state.stage,stageId:stage.id,raw:[...strings],values:checked.values,expected:stage.expected,correct:checked.correct,presentedAt:new Date(state.shownAt).toISOString(),answeredAt:new Date(now).toISOString(),responseTimeMs:Math.max(0,now-state.shownAt),attemptTimeMs:Math.max(0,now-(state.lastAnsweredAt===null?state.shownAt:state.lastAnsweredAt)),hintUsed:state.stageHint,solutionViewed:state.stageSolution,taskAssisted:state.taskAssisted},now);
+ state.lastAnsweredAt=now;state.inputs=[...strings];
+ if(!checked.correct){if(state.mode==='practice'&&state.app===1)state.streak=0;return checked;}
+ state.status='correct';
+ if(state.stage===stagesFor(task).length-1&&state.mode==='practice'){
+  if(!state.taskAssisted){if(state.app===1){state.streak++;state.maxStreak=Math.max(state.maxStreak,state.streak);}if(!state.completedTasks.includes(task.id))state.completedTasks.push(task.id);}else if(state.app===1)state.streak=0;
+  const count=state.app===1?state.streak:state.completedTasks.length;
+  log(state,'task-completed',{taskId:task.id,independent:!state.taskAssisted,completedTasks:state.completedTasks.length,streak:state.streak},now);
+  if(!state.passedAt&&count>=META[state.app].target){state.passedAt=now;log(state,'passed',{passCondition:META[state.app].pass},now);}
+ }
+ return checked;
+}
+function useHelp(state,type,now=Date.now()){if(type==='hint')state.stageHint=true;else state.stageSolution=true;if(type!=='hint'&&state.status==='working')state.taskAssisted=true;log(state,type,{mode:state.mode,taskId:currentTask(state).id,stageIndex:state.stage,afterAnswer:state.status!=='working'},now);}
+function resetStage(state,now){state.lastAnsweredAt=null;state.status='working';state.inputs=[];state.shownAt=now;state.stageHint=false;state.stageSolution=false;state.graphT=0;}
+function advance(state,now=Date.now()){if(state.status!=='correct')return;const total=stagesFor(currentTask(state)).length;if(state.stage+1<total){state.stage++;resetStage(state,now);return;}if(state.mode==='review'&&state.resume){Object.assign(state,state.resume);state.resume=null;log(state,'review-finished',{},now);return;}if(state.mode==='tutorial'){state.mode='practice';state.index=0;log(state,'practice-started',{},now);}else state.index++;state.stage=0;state.taskAssisted=false;resetStage(state,now);}
+function startPractice(state,now=Date.now()){if(state.mode==='review'&&state.resume){Object.assign(state,state.resume);state.resume=null;log(state,'review-ended',{},now);return;}if(state.mode==='practice')return;log(state,'tutorial-skipped',{stageIndex:state.stage},now);state.mode='practice';state.index=0;state.stage=0;state.taskAssisted=false;resetStage(state,now);}
+function startReview(state,now=Date.now()){if(state.mode==='review')return;const keys=['mode','index','stage','status','inputs','shownAt','lastAnsweredAt','taskAssisted','stageHint','stageSolution','graphT'];state.resume=Object.fromEntries(keys.map(key=>[key,Array.isArray(state[key])?[...state[key]]:state[key]]));state.mode='review';state.index=0;state.stage=0;state.taskAssisted=false;resetStage(state,now);log(state,'review-started',{},now);}
+function canSubmit(state,now=Date.now()){return!!state.passedAt||now-state.started>=SUBMIT_MS;}
+function exportRecord(state,now=Date.now()){return{course:'線形代数学I-a 2026年度',lesson:2,app:state.app,title:META[state.app].title,version:VERSION,purpose:'lesson2-practice',sessionId:state.sessionId,startedAt:new Date(state.started).toISOString(),exportedAt:new Date(now).toISOString(),elapsedMs:Math.max(0,now-state.started),timingNote:'別タブ・休止時間を含む経過時間．再読込ではリセットしない．',passCondition:META[state.app].pass,passed:!!state.passedAt,passedAt:state.passedAt?new Date(state.passedAt).toISOString():null,submissionStatus:state.passedAt?'completed':canSubmit(state,now)?'incomplete-timeout':'in-progress',submissionAvailable:canSubmit(state,now),current:{mode:state.mode,index:state.index,stage:state.stage,status:state.status},achievement:{independentTasks:state.completedTasks.length,completedTaskIds:[...state.completedTasks],streak:state.streak,maxStreak:state.maxStreak,target:META[state.app].target},events:state.events};}
+const CURVE_VERSION='2026-10-04.1';
+const CURVE_PARTS=['coefficients','intersections'];
+function curveSheet(index=0,required=CURVE_PARTS,now=Date.now()){
+ return{index,required:[...required],coefficients:['','','',''],points:[['','']],solved:{coefficients:false,intersections:false},helped:{coefficients:false,intersections:false},hints:{},solutions:{},feedback:{},shownAt:now,entered:false,lastAnsweredAt:{},complete:false,graphT:0};
+}
+function curveCreateState(now=Date.now()){
+ return{schema:2,version:CURVE_VERSION,app:4,sessionId:'l2-4-'+now+'-'+Math.random().toString(36).slice(2,10),started:now,view:'example',practice:curveSheet(0,CURVE_PARTS,now),example:curveSheet(0,CURVE_PARTS,now),review:{stage:0,inputs:[],solved:false,graphT:0,shownAt:now,lastAnsweredAt:null,solution:false},completedKeys:[],skills:{coefficients:false,intersections:false},passedAt:null,events:[]};
+}
+function curveTask(state){return taskFor(4,state.view==='practice'?state.practice.index:0,state.view!=='practice');}
+function curveCheckPart(task,part,raw){
+ if(part==='coefficients')return checkStage(stagesFor(task)[0],raw);
+ if(part!=='intersections'||!Array.isArray(raw)||!raw.length)return{valid:false,correct:false,error:'共有点の座標を入力してください．'};
+ const rows=raw.filter(p=>Array.isArray(p)&&p.some(x=>String(x).trim()!==''));
+ if(!rows.length)return{valid:false,correct:false,error:'共有点の座標を入力してください．'};
+ let values;try{values=rows.map(p=>{if(p.length!==2)throw Error('各点の座標を2つ入力してください．');return p.map(x=>parseNumber(String(x)));});}catch(e){return{valid:false,correct:false,error:e.message};}
+ const height=stagesFor(task)[3].expected[3],expected=[[0,0],[0,height]],matches=values.map(p=>expected.findIndex(q=>p.every((v,i)=>near(v,q[i]))));
+ return{valid:true,correct:values.length===expected.length&&new Set(matches).size===expected.length&&matches.every(i=>i>=0),values,allOnCurve:matches.every(i=>i>=0),duplicate:new Set(matches.filter(i=>i>=0)).size<matches.filter(i=>i>=0).length,error:null};
+}
+function curveSubmit(state,now=Date.now()){
+ if(state.view==='review')return{};
+ const p=state[state.view],task=curveTask(state),results={};
+ for(const part of p.required){
+  if(p.solved[part])continue;
+  const raw=part==='coefficients'?p.coefficients:p.points,result=curveCheckPart(task,part,raw);results[part]=result;
+  if(!result.valid){p.feedback[part]=result.error;continue;}
+  log(state,state.view==='practice'?'answer':'example-answer',{part,task,raw:JSON.parse(JSON.stringify(raw)),values:result.values,correct:result.correct,solutionViewed:p.helped[part],hintUsed:!!p.hints[part],presentedAt:new Date(p.shownAt).toISOString(),responseTimeMs:Math.max(0,now-p.shownAt),attemptTimeMs:Math.max(0,now-(p.lastAnsweredAt[part]??p.shownAt))},now);
+  p.lastAnsweredAt[part]=now;
+  if(result.correct){p.solved[part]=true;p.feedback[part]='確認できました．';if(state.view==='practice'&&!p.helped[part])state.skills[part]=true;}
+  else p.feedback[part]=part==='coefficients'?'t と t² の係数を確かめよう．入力は残しています．':result.duplicate?'同じ共有点が重複しています．点の一覧を確かめよう．':result.allOnCurve?'入力した点は共有点です．ほかにもないか，式から確かめよう．':'座標式に対応する点か，y 軸上にあるかを確かめよう．';
+ }
+ if(!p.complete&&p.required.every(part=>p.solved[part])){
+  p.complete=true;
+  if(state.view==='practice'){
+   const key='curve-bank-'+p.index%6;
+   if(p.required.length===2&&!state.completedKeys.includes(key))state.completedKeys.push(key);
+   log(state,'task-completed',{task,required:p.required,helped:{...p.helped},completedKeys:[...state.completedKeys],skills:{...state.skills}},now);
+   if(!state.passedAt&&state.completedKeys.length>=2&&CURVE_PARTS.every(part=>state.skills[part])){state.passedAt=now;log(state,'passed',{completedKeys:[...state.completedKeys],skills:{...state.skills}},now);}
+  }
+ }
+ return results;
+}
+function curveUseHelp(state,part,type,now=Date.now()){
+ const p=state[state.view];if(state.view==='review'||!CURVE_PARTS.includes(part))return;
+ if(type==='solution'){p.solutions[part]=true;if(!p.solved[part])p.helped[part]=true;}else p.hints[part]=true;
+ log(state,type,{view:state.view,part,task:curveTask(state),afterCorrect:p.solved[part]},now);
+}
+function curveNext(state,now=Date.now()){
+ if(state.view!=='practice'||!state.practice.complete)return;
+ const missing=CURVE_PARTS.filter(part=>!state.skills[part]);
+ const required=state.completedKeys.length>=2&&missing.length?missing:CURVE_PARTS;
+ state.practice=curveSheet(state.practice.index+1,required,now);log(state,'next-problem',{index:state.practice.index,required},now);
+}
+
+const QUARTER_VERSION='2026-10-04.1',QUARTER_PARTS=['matrix','P','Q'];
+function quarterProblem(phase='practice',index=0){
+ if(!['practice','tutorial'].includes(phase)||!Number.isSafeInteger(index)||index<0)throw Error('問題の指定を確かめてください．');
+ const q=taskFor(2,index,phase!=='practice');
+ return{...q,index:phase==='practice'?index:0,problemKey:'quarter-'+phase+'-bank'+(phase==='practice'?index%5:0)};
+}
+function checkQuarterPart(q,part,raw){
+ const i=QUARTER_PARTS.indexOf(part);if(i<0)return{status:'invalid',error:'問題の部分を確認してください．'};
+ const r=checkStage(stagesFor(q)[i],raw);
+ return{...r,status:r.valid?(r.correct?'correct':'wrong'):'invalid'};
+}
+function quarterCoverage(completed=[],evidence=[]){
+ const whole=new Set(),seen={P:new Set(),Q:new Set()},fractional={P:false,Q:false};let matrix=false;
+ for(const row of completed)if(row?.phase==='practice'&&row.whole&&row.problemKey)whole.add(row.problemKey);
+ for(const row of evidence)if(row?.phase==='practice'&&row.problemKey&&!row.assisted){
+  if(row.part==='matrix')matrix=true;
+  else if(seen[row.part]){seen[row.part].add(row.problemKey);if(row.nonInteger)fractional[row.part]=true;}
+ }
+ const points={P:seen.P.size,Q:seen.Q.size},pointKeys={P:[...seen.P],Q:[...seen.Q]};
+ return{completed:Math.min(2,whole.size),wholeCompleted:whole.size,total:2,matrix,points,pointKeys,fractional,passed:whole.size>=2&&matrix&&points.P>=2&&points.Q>=2&&fractional.P&&fractional.Q};
+}
+function quarterPlan(completed=[],evidence=[],startIndex=0){
+ if(!Number.isSafeInteger(startIndex)||startIndex<0)throw Error('問題番号を確認してください．');
+ const c=quarterCoverage(completed,evidence),matrix=c.matrix?[]:['matrix'];
+ if(c.completed<2||c.passed)return{index:startIndex,scope:[...matrix,'P','Q'],whole:true};
+ const needed=['P','Q'].filter(k=>c.points[k]<2||!c.fractional[k]);
+ if(!needed.length)return{index:startIndex,scope:matrix,whole:false};
+ for(let offset=0;offset<5;offset++){
+  const index=startIndex+offset,q=quarterProblem('practice',index);
+  const useful=needed.filter(k=>!c.pointKeys[k].includes(q.problemKey)&&
+   (c.fractional[k]||q.points[k==='P'?0:1].p.some(n=>!Number.isInteger(n))));
+  if(useful.length)return{index,scope:[...matrix,...useful],whole:false};
+ }
+ throw Error('補充する条件を確認してください．');
+}
+
+const NORMAL_VERSION='2026-10-04.1';
+function normalProblem(phase='practice',index=0){
+ if(!['practice','tutorial'].includes(phase)||!Number.isSafeInteger(index)||index<0)throw Error('問題の指定を確かめてください．');
+ const q=taskFor(1,index,phase==='tutorial'),point=q.points[phase==='tutorial'?index%2:0];
+ return{...q,index,problemKey:'normal-'+phase+'-'+(index%(phase==='tutorial'?2:8)),point,points:[point],nonInteger:point.p.some(x=>!Number.isInteger(x)),expected:apply(q.A,point.p)};
+}
+function checkNormalAnswer(q,raw){const result=checkStage({expected:q.expected},raw);return{...result,status:!result.valid?'invalid':result.correct?'correct':'wrong'};}
+function normalCoverage(evidence=[],streak=0,maxStreak=streak){
+ const unique=new Map();for(const row of evidence)if(row.phase==='practice'&&!row.assisted&&typeof row.problemKey==='string'&&!unique.has(row.problemKey))unique.set(row.problemKey,row);
+ const rows=[...unique.values()],integer=rows.some(r=>r.nonInteger===false),nonInteger=rows.some(r=>r.nonInteger===true),best=Math.max(streak,maxStreak);
+ return{streak,maxStreak:best,independentTotal:rows.length,independentKeys:[...unique.keys()],integer,nonInteger,passed:(best>=3||rows.length>=5)&&integer&&nonInteger};
+}
+function normalNextIndex(index,evidence=[],streak=0,maxStreak=streak){
+ const c=normalCoverage(evidence,streak,maxStreak);if(!c.passed&&(c.maxStreak>=3||c.independentTotal>=5)&&(!c.integer||!c.nonInteger))for(let offset=1;offset<=8;offset++){const q=normalProblem('practice',index+offset);if(q.nonInteger?!c.nonInteger:!c.integer)return index+offset;}
+ return index+1;
+}
+
+const ROTATION_VERSION='2026-10-04.1',ROTATION_TYPES=['60','-30','45'];
+function rotationProblem(phase='practice',index=0){
+ if(!['practice','tutorial'].includes(phase)||!Number.isSafeInteger(index)||index<0)throw Error('問題の指定を確かめてください．');
+ const base=taskFor(3,phase==='practice'?index%3:0,phase==='tutorial'),point=phase==='tutorial'||index%6<3?base.points[0]:{name:'P',p:[[2,4],[6,-2],[-4,2]][index%3]};
+ return{...base,index,type:String(base.angle),point,points:[point],problemKey:'rotation-'+phase+'-'+(phase==='tutorial'?0:index%6)};
+}
+function checkRotationPart(q,part,raw){
+ if(!['matrix','point'].includes(part))throw Error('確認する部分を指定してください．');
+ const result=checkStage({expected:part==='matrix'?q.A:apply(q.A,q.point.p)},raw);return{...result,status:!result.valid?'invalid':result.correct?'correct':'wrong'};
+}
+function rotationCoverage(completed=[],evidence=[]){
+ const types=Object.fromEntries(ROTATION_TYPES.map(type=>[type,false])),matrix={...types};let point=false;
+ for(const row of completed)if(row.phase==='practice'&&row.whole&&ROTATION_TYPES.includes(row.type))types[row.type]=true;
+ for(const row of evidence)if(row.phase==='practice'&&!row.assisted&&ROTATION_TYPES.includes(row.type)){if(row.part==='matrix')matrix[row.type]=true;if(row.part==='point')point=true;}
+ const completedTypes=ROTATION_TYPES.filter(type=>types[type]);return{completed:completedTypes.length,completedTypes,types,matrix,point,passed:completedTypes.length===3&&ROTATION_TYPES.every(type=>matrix[type])&&point};
+}
+function rotationPlan(completed=[],evidence=[],startIndex=0){
+ const c=rotationCoverage(completed,evidence);for(let offset=0;offset<6;offset++){const index=startIndex+offset,q=rotationProblem('practice',index);if(!c.types[q.type])return{index,scope:['matrix','point'],whole:true};}
+ if(c.passed)return{index:startIndex,scope:['matrix','point'],whole:true};
+ const matrixMissing=ROTATION_TYPES.some(type=>!c.matrix[type]);for(let offset=0;offset<6;offset++){const index=startIndex+offset,q=rotationProblem('practice',index),scope=[];if(matrixMissing&&c.matrix[q.type])continue;if(!c.matrix[q.type])scope.push('matrix');if(!c.point)scope.push('point');if(scope.length)return{index,scope,whole:false};}
+ throw Error('補充する条件を確認してください．');
+}
+
+return{ROTATION_VERSION,ROTATION_TYPES,rotationProblem,checkRotationPart,rotationCoverage,rotationPlan,NORMAL_VERSION,normalProblem,checkNormalAnswer,normalCoverage,normalNextIndex,QUARTER_VERSION,QUARTER_PARTS,quarterProblem,checkQuarterPart,quarterCoverage,quarterPlan,VERSION,GOOD_MS,SUBMIT_MS,META,parseNumber,exact,near,rotation,apply,rotationPointText,taskFor,stagesFor,checkStage,createState,currentTask,currentStage,recordAnswer,useHelp,advance,startPractice,startReview,canSubmit,exportRecord,log,CURVE_VERSION,CURVE_PARTS,curveSheet,curveCreateState,curveTask,curveCheckPart,curveSubmit,curveUseHelp,curveNext};
+});
+
+</script>
+<script>(function(){
+'use strict';
+const C=window.Lesson2Core,APP=Number(window.LESSON2_APP_ID),META=C.META[APP],KEY='senkeiIa.2026.lesson2.app'+APP+'.v1';
+const main=document.getElementById('main');
+document.getElementById('app-title').textContent=META.title;
+document.getElementById('app-goal').textContent=META.goal;
+let state,storageOK=true,storageWriteBlocked=false,storageNotice='',advanceTimer=null,paused=false,feedback='',feedbackGood=false,manualText='',copyMessage='',recordsOpen=false;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val=n=>esc(C.exact(n)),txtPoint=p=>'('+p.map(C.exact).join(', ')+')';
+if(APP===1){runNormalApp();return;}
+if(APP===2){runQuarterApp();return;}
+if(APP===3){runRotationApp();return;}
+if(APP===4){runCurveApp();return;}
+try{
+ const raw=localStorage.getItem(KEY);
+ if(raw){
+  let saved=null;try{saved=JSON.parse(raw);}catch(e){}
+  if(saved&&saved.schema===1&&saved.version===C.VERSION&&saved.app===APP&&Array.isArray(saved.events)&&['tutorial','practice','review'].includes(saved.mode)){state=saved;}
+  else{
+   const archiveKey=KEY+'.archive.'+(saved&&saved.version?saved.version:'unknown')+'.'+Date.now();
+   try{localStorage.setItem(archiveKey,raw);storageNotice='以前の記録は別の保存先に保管しました．この版では新しい練習を始めます．';}
+   catch(e){storageOK=false;storageWriteBlocked=true;storageNotice='以前の記録を上書きしないため，この練習は一時的に記録します．閉じる前にテキストを保存してください．';}
+  }
+ }
+}catch(e){storageOK=false;storageWriteBlocked=true;}
+if(!state)state=C.createState(APP);
+if(state.version!==C.VERSION)state=C.createState(APP);
+paused=state.status==='correct'&&state.stageSolution;
+function persist(){if(storageWriteBlocked)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageOK=false;}}
+function clearAuto(){if(advanceTimer!==null){clearTimeout(advanceTimer);advanceTimer=null;}}
+function matrix(values,cols=1,classes=true){return '<span class="matrix math" style="--cols:'+cols+'">'+values.map((n,i)=>'<span class="'+(classes&&cols===2?(i%2?'col2':'col1'):'')+'">'+(typeof n==='number'?val(n):n)+'</span>').join('')+'</span>';}
+function entry(i,stage){return '<input class="entry'+(state.status==='correct'?' correct':'')+'" id="answer-'+i+'" data-index="'+i+'" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(stage.labels[i])+'" value="'+esc(state.inputs[i]??'')+'"'+(state.status==='correct'?' disabled':'')+'>';}
+function inputMatrix(ids,cols,stage){return '<span class="matrix input-matrix" style="--cols:'+cols+';'+(cols===2?'grid-auto-flow:column;grid-template-rows:repeat(2,auto);':'')+'">'+ids.map(i=>entry(i,stage)).join('')+'</span>';}
+function angleDescription(deg){return deg<0?'時計回りに '+Math.abs(deg)+'°':'反時計回りに '+deg+'°';}
+function recordProgress(){return APP===1?state.streak:state.completedTasks.length;}
+function svgGraph({points=[],vectors=[],paths=[],circle=false,arc=null,bounds=null,title='',clip=true,idPrefix=''}){
+ const W=400,H=340,m=34;
+ let all=[[0,0],...points.map(o=>o.p),...vectors.flatMap(v=>[v.from||[0,0],v.to]),...paths.flatMap(o=>o.points)];
+ let bound=bounds||Math.max(2,...all.flat().map(Math.abs))*1.15;
+ const scale=(Math.min(W,H)-2*m)/(2*bound),ox=W/2,oy=H/2;
+ const X=x=>ox+x*scale,Y=y=>oy-y*scale;
+ const step=bound<=2?0.5:bound<=6?1:bound<=13?2:5;
+ let grid='';
+ for(let n=-Math.floor(bound/step)*step;n<=bound+.0001;n+=step){
+  if(Math.abs(n)<1e-8)continue;
+  grid+='<line x1="'+X(n)+'" y1="20" x2="'+X(n)+'" y2="'+(H-20)+'" stroke="#ccd5d8"/><line x1="20" y1="'+Y(n)+'" x2="'+(W-20)+'" y2="'+Y(n)+'" stroke="#ccd5d8"/>';
+  if(Math.abs(Math.abs(n)-Math.floor(bound/step)*step)<1e-8)grid+='<text x="'+X(n)+'" y="'+(oy+16)+'" text-anchor="middle" fill="#536970" font-size="13">'+C.exact(n)+'</text><text x="'+(ox-9)+'" y="'+(Y(n)+4)+'" text-anchor="end" fill="#536970" font-size="13">'+C.exact(n)+'</text>';
+ }
+ let marks='';
+ if(circle)marks+='<circle cx="'+ox+'" cy="'+oy+'" r="'+scale+'" fill="none" stroke="#ccd9dc" stroke-width="1.5"/>';
+ for(const path of paths){marks+='<path d="'+path.points.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(2)+','+Y(p[1]).toFixed(2)).join(' ')+'" fill="none" stroke="'+path.color+'" stroke-width="'+(path.width||2.5)+'"'+(path.dash?' stroke-dasharray="5 4"':'')+'/>';}
+ if(arc!==null){const ps=[];for(let i=0;i<=30;i++){const a=arc*Math.PI/180*i/30;ps.push([.55*Math.cos(a),.55*Math.sin(a)]);}marks+='<path d="'+ps.map((p,i)=>(i?'L':'M')+X(p[0])+','+Y(p[1])).join(' ')+'" fill="none" stroke="#a36320" stroke-width="2" marker-end="url(#arrow-ochre)"/><text x="'+X(.78*Math.cos(arc*Math.PI/360))+'" y="'+Y(.78*Math.sin(arc*Math.PI/360))+'" text-anchor="middle" fill="#a36320" font-size="12">'+arc+'°</text>';}
+ for(const v of vectors){const f=v.from||[0,0];marks+='<line x1="'+X(f[0])+'" y1="'+Y(f[1])+'" x2="'+X(v.to[0])+'" y2="'+Y(v.to[1])+'" stroke="'+v.color+'" stroke-width="'+(v.width||2.5)+'" marker-end="url(#arrow-'+(v.color==='#a36320'?'ochre':v.color==='#17354a'?'navy':'teal')+')"'+(v.dash?' stroke-dasharray="5 4"':'')+'/>';if(v.label)marks+='<text x="'+(X(v.to[0])+(v.dx??8))+'" y="'+(Y(v.to[1])+(v.dy??-9))+'" text-anchor="'+(v.anchor||'start')+'" fill="'+v.color+'" font-size="13">'+esc(v.label)+'</text>';}
+ for(const pt of points){const right=pt.p[0]<bound*.55,x=X(pt.p[0])+(pt.dx??(right?9:-9)),y=Y(pt.p[1])+(pt.dy??-10);marks+='<circle cx="'+X(pt.p[0])+'" cy="'+Y(pt.p[1])+'" r="'+(pt.r||4.8)+'" fill="'+pt.color+'" stroke="white" stroke-width="1.7"/>';if(pt.label)marks+='<text x="'+x+'" y="'+y+'" text-anchor="'+(pt.anchor||(right?'start':'end'))+'" fill="'+pt.color+'" font-size="13">'+esc(pt.label)+'</text>';}
+ let svg='<svg class="diagram" viewBox="0 0 400 340" data-bound="'+bound+'" data-scale="'+scale+'" data-grid-step="'+step+'" role="img" aria-label="'+esc(title)+'"><defs><clipPath id="plot-clip"><rect x="15" y="15" width="370" height="310"/></clipPath>'+[['teal','#126e71'],['ochre','#a36320'],['navy','#17354a']].map(([n,c])=>'<marker id="arrow-'+n+'" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3.5 L0,7 Z" fill="'+c+'"/></marker>').join('')+'</defs>'+grid+'<line x1="17" y1="'+oy+'" x2="386" y2="'+oy+'" stroke="#879ca5" marker-end="url(#arrow-navy)"/><line x1="'+ox+'" y1="323" x2="'+ox+'" y2="12" stroke="#879ca5" marker-end="url(#arrow-navy)"/><text x="385" y="'+(oy-8)+'" font-size="13" fill="#536970">x</text><text x="'+(ox+9)+'" y="17" font-size="13" fill="#536970">y</text><text x="'+(ox-12)+'" y="'+(oy+15)+'" font-size="11" fill="#536970">O</text><g data-plot-content'+(clip?' clip-path="url(#plot-clip)"':'')+'>'+marks+'</g><circle class="plot-origin" cx="'+ox+'" cy="'+oy+'" r="2.5" fill="#000"/></svg>';
+ if(idPrefix)svg=svg.replace(/id="([^"]+)"/g,(_,id)=>'id="'+idPrefix+'-'+id+'"').replace(/url\(#([^)]+)\)/g,(_,id)=>'url(#'+idPrefix+'-'+id+')');
+ return svg;
+}
+function graphPanel(task,stage,view=state){
+ const show=view.status==='correct'||view.stageSolution||view.mode!=='practice';
+ const previous=view.stage;
+ let graph='',caption='',extra='',legend='';
+ if(APP===1){
+  const point=stage.point,[x,y]=point.p,A=task.A,out=C.apply(A,point.p),a=[A[0],A[2]],b=[A[1],A[3]];
+  const vectors=[{to:a,color:'#126e71',label:'a⃗',dx:a[0]>=0?12:-22,dy:-10},{to:b,color:'#a36320',label:'b⃗',dx:b[0]>=0?12:-22,dy:-13}];
+  const points=[];
+  if(show){const ax=a.map(v=>v*x);vectors.push({to:ax,color:'#126e71',dash:true,label:'a⃗ × '+C.exact(x),dy:-10},{from:ax,to:out,color:'#a36320',dash:true,label:'b⃗ × '+C.exact(y),dy:20});points.push({p:out,color:'#17354a',label:point.name+'′',dy:-12});}
+  graph=svgGraph({vectors,points,bounds:Math.max(3,...[...a,...b,...out,...a.map(v=>v*x)].map(Math.abs))*1.2,title:'原点からaをx倍し，続いてbをy倍して進む図'});
+  caption=show?'原点 O から第1列を '+C.exact(x)+' 倍した分だけ進み，その先から第2列を '+C.exact(y)+' 倍した分だけ進むと，'+point.name+'′ に着きます．':'今回は作図先に座標軸を加えています．入力の点の座標を係数として使います．';
+  legend='<span><i style="background:#126e71"></i>第1列のベクトル a⃗</span><span><i style="background:#a36320"></i>第2列のベクトル b⃗</span>';
+  extra='<div class="mapping-summary"><p>入力：'+esc(point.name+txtPoint(point.p))+'</p><p>行き先：'+(show?esc(point.name+'′'+txtPoint(out)):'計算した2つの成分が座標になる')+'</p></div>';
+ }else if(APP===2||APP===3){
+  if(stage.kind==='matrix'){
+   const a=[task.A[0],task.A[2]],b=[task.A[1],task.A[3]];
+   graph=svgGraph({circle:true,arc:task.angle,bounds:1.55,vectors:[{to:[1,0],color:'#17354a',dash:true},{to:[0,1],color:'#17354a',dash:true},{to:a,color:'#126e71',label:APP===2?'(1,0) の行き先':'(cos θ, sin θ)',dx:a[0]<0?-7:7,anchor:a[0]<0?'end':'start',dy:-12},{to:b,color:'#a36320',label:APP===2?'(0,1) の行き先':'(−sin θ, cos θ)',dx:b[0]<0?-7:7,anchor:b[0]<0?'end':'start',dy:b[1]>.7?-13:20}],title:'原点を中心とする回転と2本の列の対応'});
+   caption='第1列には (1,0) の行き先，第2列には (0,1) の行き先を並べます．';
+  }else{
+   const point=stage.point,out=C.apply(task.A,point.p),points=[{p:point.p,color:'#126e71',label:point.name}];
+   if(show)points.push({p:out,color:'#a36320',label:point.name+'′'});
+   const radius=Math.hypot(...point.p),path=[];if(show)for(let i=0;i<=60;i++){const r=C.rotation(task.angle*i/60);path.push(C.apply(r,point.p));}
+   graph=svgGraph({points,paths:path.length?[{points:path,color:'#becdd0',dash:true}]:[],vectors:[{to:point.p,color:'#126e71',width:1.5},...(show?[{to:out,color:'#a36320',width:1.5}]:[])],bounds:radius*1.22,title:point.name+'と回転後の点'+point.name+'′'});
+   caption='原点からの距離は回転の前後で同じです．'+(show?'回す向きも図で確かめましょう．':'計算したら，行き先が図に現れます．');
+   extra='<div class="mapping-summary"><p>入力：'+esc(point.name+txtPoint(point.p))+'</p><p>回転：'+esc(angleDescription(task.angle))+'</p>'+(show?'<p>行き先：'+esc(point.name+'′ ('+C.rotationPointText(task.angle,point.p).join(', ')+')')+'</p>':'')+'</div>';
+  }
+  legend='<span><i style="background:#126e71"></i>'+(stage.kind==='matrix'?'第1列':'回転前')+'</span><span><i style="background:#a36320"></i>'+(stage.kind==='matrix'?'第2列':'回転後')+'</span>';
+ }else{
+  const root=task.A[0]/(task.k*task.A[2]),extent=Math.ceil(Math.max(1,Math.abs(root)*1.2)*100)/100,original=[],rotated=[];
+  for(let i=0;i<=100;i++){const t=-extent+2*extent*i/100,p=[t,task.k*t*t];original.push(p);rotated.push(C.apply(task.A,p));}
+  const bound=Math.max(3,...original.flat().map(Math.abs),...rotated.flat().map(Math.abs))*1.12;
+  const reveal=view.stage>0||show,t=Number(view.graphT)||0,p=[t,task.k*t*t],q=C.apply(task.A,p);
+  const sourcePoints=[{p,color:'#126e71',label:'P',dy:-12}];
+  const sharedY=task.A[0]/(task.k*task.A[2]*task.A[2]),sharedShown=stage.kind==='intersections'&&show,belowShared=q[1]<=sharedY;
+  const imagePoints=reveal?[{p:q,color:'#a36320',label:'P′',dy:sharedShown&&belowShared?18:-12}]:[];
+  if(sharedShown)imagePoints.push({p:[0,sharedY],color:'#17354a',label:'y 軸との共有点',dx:10,dy:belowShared?-12:18});
+  const sourceGraph=svgGraph({paths:[{points:original,color:'#126e71'}],points:sourcePoints,bounds:bound,title:'元の放物線とその上の点P',idPrefix:'curve-source'});
+  const imageGraph=svgGraph({paths:reveal?[{points:rotated,color:'#a36320'}]:[],points:imagePoints,bounds:bound,title:reveal?'回転した像と点Pの行き先P′':'回転した像を表示する座標平面',idPrefix:'curve-image'});
+  const coefficient=task.k===1?'':Number.isInteger(task.k)?C.exact(task.k):'('+C.exact(task.k)+')';
+  graph='<div class="curve-plots"><figure class="curve-plot" id="graph-source"><figcaption><h3 class="curve-source-title">元の放物線</h3><p class="math">y = '+esc(coefficient)+'x²，P(t, '+esc(coefficient)+'t²)</p></figcaption>'+sourceGraph+'</figure><figure class="curve-plot" id="graph-image"><figcaption><h3 class="curve-image-title">回転した像</h3><p class="math">P′(x′, y′)</p></figcaption>'+imageGraph+'</figure></div>';
+  caption='2つの図は同じ目盛り・同じ縮尺で，放物線の一部分を表示しています．'+(reveal?'同じ t を使って元の点 P と，その行き先 P′ を見比べましょう．':'回転後の座標の式が求まると，像と P′ が表示されます．');
+  if(reveal)extra='<label class="slider-label">2つの点を同じ t で動かす：t = <output id="t-value">'+esc(C.exact(t))+'</output><input id="explore-t" type="range" min="'+(-extent)+'" max="'+extent+'" step=".01" value="'+t+'" aria-label="元の点Pと回転後の点P′を同時に動かすtの値"></label><p class="tiny">この操作は正誤判定に含めません．</p>';
+  return '<aside class="panel graph-panel curve-panel"><p class="section-label">元の点と行き先を見比べる</p><div id="graph-svg">'+graph+'</div><p class="graph-caption">'+caption+'</p>'+extra+'</aside>';
+ }
+ return '<aside class="panel graph-panel"><p class="section-label">式と図をつなぐ</p><div class="legend">'+legend+'</div><div id="graph-svg">'+graph+'</div><p class="graph-caption">'+caption+'</p>'+extra+'</aside>';
+}
+function taskIntro(task,stage){
+ if(APP===1)return '<p class="problem">行列 A による1次変換で，点 <strong>'+esc(stage.point.name+txtPoint(stage.point.p))+'</strong> の行き先を求めよう．</p><div class="math-block"><span class="math">A =</span>'+matrix(task.A,2)+'</div><p class="tiny">各列をそれぞれ倍してから，できた2本を足します．</p>';
+ if(APP===2||APP===3){
+  let html='<p class="problem">原点を中心に <strong>'+esc(angleDescription(task.angle))+'</strong> 回転させます．'+(stage.point?'点 <strong>'+esc(stage.point.name+txtPoint(stage.point.p))+'</strong> の行き先を求めよう．':'この回転を表す行列を求めよう．')+'</p>';
+  if(APP===3&&stage.kind==='matrix')html+='<div class="formula-note math">cos('+String(task.angle).replace('-','−')+'°) = '+val(task.A[0])+'，sin('+String(task.angle).replace('-','−')+'°) = '+val(task.A[2])+'</div>';
+  if(stage.kind==='point')html+='<div class="math-block"><span class="math">R =</span>'+matrix(task.A,2)+'</div>';
+  return html;
+ }
+ const coefficient=Number.isInteger(task.k)?C.exact(task.k):'('+C.exact(task.k)+')';
+ const k=task.k===1?'':coefficient,pCoeff=k;
+ return '<p class="problem">放物線 <span class="math">y = '+esc(k)+'x²</span> を，原点を中心に <strong>'+esc(angleDescription(task.angle))+'</strong> 回転させます．曲線上の点を <span class="math">P(t, '+esc(pCoeff)+'t²)</span> とおきます．</p><div class="math-block"><span class="math">R =</span>'+matrix(task.A,2)+'</div>';
+}
+function answerForm(task,stage){
+ if(stage.kind==='columns'){
+  const A=task.A,[x,y]=stage.point.p;
+  return '<p>次の等号が成り立つように，空欄を埋めよう．</p><div class="math-block"><span class="coefficient-term">'+matrix([A[0],A[2]])+'<span class="math">× ('+val(x)+')</span></span><span class="coefficient-term"><span class="operator">+</span>'+matrix([A[1],A[3]])+'<span class="math">× ('+val(y)+')</span></span></div><div class="equation-row"><span class="coefficient-term"><span class="operator">=</span>'+inputMatrix([0,1],1,stage)+'</span><span class="coefficient-term"><span class="operator">+</span>'+inputMatrix([2,3],1,stage)+'</span><span class="coefficient-term"><span class="operator">=</span>'+inputMatrix([4,5],1,stage)+'</span></div><p class="answer-label">最後の列ベクトルが '+esc(stage.point.name)+'′ の座標を表します．</p>';
+ }
+ if(stage.kind==='matrix')return '<p>2つの行き先を，順に第1列，第2列へ並べよう．</p><div class="math-block"><span class="math">R =</span>'+inputMatrix([0,2,1,3],2,stage)+'</div>';
+ if(stage.kind==='point')return '<div class="math-block">'+matrix(task.A,2)+matrix(stage.point.p)+'<span class="operator">=</span>'+inputMatrix([0,1],1,stage)+'</div><p class="answer-label">入力 '+esc(stage.point.name)+' の座標から，出力 '+esc(stage.point.name)+'′ の座標を求めます．</p>';
+ if(stage.kind==='coefficients')return '<p>次の式の係数を求めよう．負の係数には負号も付けます．</p><div class="coefficient-row math"><span>x′(t) =</span><span class="coefficient-term">'+entry(0,stage)+'<span>t</span></span><span>+</span><span class="coefficient-term"><span>(</span>'+entry(1,stage)+'<span>)t²</span></span></div><div class="coefficient-row math"><span>y′(t) =</span><span class="coefficient-term">'+entry(2,stage)+'<span>t</span></span><span>+</span><span class="coefficient-term"><span>(</span>'+entry(3,stage)+'<span>)t²</span></span></div>';
+ const coeff=C.stagesFor(task)[0].expected;
+ const formulas='<div class="formula-note math">x′(t) = ('+val(coeff[0])+')t + ('+val(coeff[1])+')t²<br>y′(t) = ('+val(coeff[2])+')t + ('+val(coeff[3])+')t²</div>';
+ if(stage.kind==='choice')return formulas+'<p>回転後の点が <strong>y 軸上</strong> にある条件を選ぼう．選ぶとその場で判定します．</p><div class="choice-grid">'+stage.options.map((option,i)=>'<button type="button" class="choice'+(String(state.inputs[0])===String(i)?' selected':'')+'" data-choice="'+i+'"'+(state.status==='correct'?' disabled':'')+'>'+esc(option)+'</button>').join('')+'</div>';
+ if(stage.kind==='root')return formulas+'<p><span class="math">x′(t)=0</span> となる <span class="math">t</span> を求めよう．</p><div class="coordinate-row math"><span>t = 0 または t =</span>'+entry(0,stage)+'</div>';
+ const root=task.A[0]/(task.k*task.A[2]);
+ return formulas+'<p>求めた <span class="math">t</span> を座標の式へ代入し，2つの共有点を求めよう．</p><p class="tiny math">t = 0 のとき</p><div class="coordinate-row math"><span>P′ = (</span>'+entry(0,stage)+'<span>,</span>'+entry(1,stage)+'<span>)</span></div><p class="tiny math">t = '+val(root)+' のとき</p><div class="coordinate-row math"><span>P′ = (</span>'+entry(2,stage)+'<span>,</span>'+entry(3,stage)+'<span>)</span></div>';
+}
+function tutorialGuide(task,stage){
+ if(state.mode==='practice')return '';
+ let order=stage.kind==='columns'?'左の列の上・下，中央の列の上・下，最後の列の上・下の順に入力します．':stage.kind==='matrix'?'第1列の上・下，次に第2列の上・下の順に入力します．':stage.kind==='coefficients'?'x′ の t，t² の係数，次に y′ の t，t² の係数を入力します．':stage.kind==='intersections'?'それぞれの t に対する，x′ と y′ を順に入力します．':stage.kind==='choice'?'条件のボタンを1回押してください．':'上から順に入力します．';
+ let answer=(stage.kind==='matrix'?[0,2,1,3].map(i=>stage.answerText[i]):stage.answerText).join('，');
+ return '<div class="guide"><strong>例題を使って操作してみよう</strong><p>'+esc(stage.hint)+'</p><p>'+esc(order)+'</p><p class="answer-list">この例題の入力：'+esc(answer)+'</p>'+(stage.kind!=='choice'?'<p>入力して <kbd>Enter</kbd> を押すと次の欄へ進み，最後の欄の <kbd>Enter</kbd> で回答します．通常練習も同じ操作です．</p>':'')+'</div>';
+}
+function solutionHtml(task,stage){
+ let html='<div class="guide"><strong>解説</strong><p>'+esc(stage.explanation)+'</p>';
+ if(stage.kind==='matrix')html+='<div class="math-block"><span class="math">R =</span>'+matrix(task.A,2)+'</div>';
+ html+='<p class="tiny">'+(state.status==='working'&&state.mode==='practice'?'この大問は解説を見た記録を残します．解き終えてから次の類題に取り組めます．':'計算と図の対応を確かめましょう．')+'</p></div>';return html;
+}
+function render(focus=false){
+ clearAuto();const task=C.currentTask(state),stage=C.currentStage(state),stages=C.stagesFor(task);
+ if(!stage){state.stage=0;state.status='working';return render();}
+ const passed=!!state.passedAt,completeHere=state.status==='correct'&&state.stage===stages.length-1;
+ const passStop=passed&&completeHere&&state.mode==='practice';
+ const progress=Math.min(META.target,recordProgress());
+ main.innerHTML=(storageOK?'':'<div class="storage-warning">この環境では記録をブラウザーに保存できません．ページを閉じる前に「練習記録」からテキストを保存してください．</div>')+(storageNotice?'<div class="storage-warning">'+esc(storageNotice)+'</div>':'')+
+ '<div class="statusbar"><span class="badge">'+(state.mode==='practice'?'自分で解く · 第'+(state.index+1)+'問':state.mode==='review'?'例題の見直し':'例題のチュートリアル')+'</span><div class="progress"><span class="dots">'+Array.from({length:META.target},(_,i)=>'<i class="dot'+(i<progress||passed?' done':'')+'"></i>').join('')+'</span><span>'+ (passed?'通過済み':APP===1?'連続 '+progress+' / 3':'完成 '+progress+' / '+META.target)+'</span></div></div>'+
+ '<div class="layout'+(APP===4?' curve-layout':'')+'"><section class="panel work"><p class="section-label">STEP '+(state.stage+1)+' / '+stages.length+'</p><div class="stage-track">'+stages.map((_,i)=>'<span class="'+(i<state.stage?'done':i===state.stage?'current':'')+'"></span>').join('')+'</div><h2>'+esc(stage.title)+'</h2>'+taskIntro(task,stage)+tutorialGuide(task,stage)+'<form id="answer-form" novalidate>'+answerForm(task,stage)+
+ (stage.kind!=='choice'?'<p class="input-help">分数は <code>-1/2</code>，根号は <code>√3/2</code> または <code>sqrt(3)/2</code>．<br>根号を含む答えは丸めずに入力できます（例：<code>3√3-2</code>）．</p>':'')+
+ (state.status==='correct'?'<div class="success-card" role="status"><strong>Good!</strong><p>'+(passStop?'通過しました．履歴を提出する準備ができました．':completeHere&&state.mode==='tutorial'?'例題を完成できました．この後は同じ操作で類題を解きます．':completeHere&&state.mode==='practice'&&state.taskAssisted?'解き直せました．次の類題で解説を見ずに確かめましょう．':'入力した結果を図と見比べましょう．')+'</p></div>':'')+
+ '<p class="feedback'+(feedbackGood?' success':'')+'" id="feedback" aria-live="polite">'+esc(feedback)+'</p>'+
+ (state.status==='working'&&stage.kind!=='choice'?'<div class="action-row"><button class="primary" type="submit">答えを確かめる <span aria-hidden="true">↵</span></button></div>':'')+
+ '</form><div class="help-row">'+(state.status==='working'?'<button class="text-button" id="hint">ヒント</button>':'')+'<button class="text-button" id="solution">'+(state.status==='correct'?'解説を読む（自動進行を止める）':'解説を見る')+'</button></div>'+
+ (state.stageHint?'<div class="guide"><strong>ヒント</strong><p>'+esc(stage.hint)+'</p></div>':'')+
+ (state.stageSolution?solutionHtml(task,stage):'')+
+ (state.status==='correct'&&(paused||passStop)?'<div class="action-row"><button class="secondary" id="next">'+(passStop?'続けて練習する':completeHere&&state.mode==='tutorial'?'類題を自分で解く':'次へ進む')+'</button></div>':'')+
+ (state.mode!=='practice'?'<div class="help-row"><button class="text-button" id="skip">'+(state.mode==='review'?'元の練習へ戻る':'チュートリアルを省略して練習へ')+'</button></div>':'')+'</section>'+graphPanel(task,stage)+'</div>'+
+ (passStop?'<section class="pass-card"><h2>通過しました</h2><p>'+esc(META.pass)+'できました．</p><p>'+(APP===2?'次回への問い：点 (2,−1) を90度回転させ，その行き先をもう一度90度回転させると，どこへ来るでしょうか．':APP===1?'行列を掛けた結果は，出力の点の座標です．次回は，この出力を次の変換の入力にします．':APP===3?'角度の符号と，第1列・第2列の位置を図と結び付けて覚えておきましょう．':'t は元の点を選ぶための数です．回転後の座標とは区別して使いましょう．')+'</p><div id="pass-submit"></div></section>':'')+
+ '<details class="record-panel" id="record-panel"'+(recordsOpen?' open':'')+'><summary>練習記録・提出・操作の見直し</summary><p><strong>通過条件：</strong>'+esc(META.pass)+'．チュートリアルは数えません．ヒントは使ってかまいません．解説で答えを見た大問は，自力で完成した数に含めません．</p><p>通過後，またはこのアプリの初回起動から15分後に，履歴をコピーできます．未完了でコピーした後も練習を続け，通過後にコピーし直せます．</p><div id="record-submit"></div><div class="record-actions"><button class="secondary" id="review">例題の説明をもう一度</button><button class="text-button" id="reset">練習を最初から</button></div><p class="tiny">「説明をもう一度」は履歴と進み具合を保ちます．「練習を最初から」は確認後にこのアプリの記録を初期化します．</p><p class="tiny">時間は別タブ・休止も含みます．回答間隔は，各段階の初回は表示から，解き直しでは同じ段階の直前の回答からの時間です．氏名・学籍番号の入力や，自動送信はありません．採点の扱いは授業の案内に従ってください．</p></details>'+
+ '<p class="bottom-note">講義中にすべて終える必要はありません．このブラウザーで続きを開くと，記録したところから再開します．</p><footer>線形代数学I-a · 第２回 · アプリ '+APP+' · '+esc(C.VERSION)+'<br>単一HTML・オフラインで利用できます</footer>';
+ bind(task,stage);updateSubmission();
+ if(focus&&state.status==='working'){const input=main.querySelector('.entry');if(input)input.focus({preventScroll:true});}
+ if(state.status==='correct'&&!paused&&!passStop)advanceTimer=setTimeout(()=>{C.advance(state);feedback='';paused=false;persist();render(true);},C.GOOD_MS);
+}
+function submissionHtml(){
+ const available=C.canSubmit(state)||!storageOK,status=state.passedAt?'通過済み':C.canSubmit(state)?'15分経過・未完了で提出可能':'練習中';
+ const minutes=Math.floor((Date.now()-state.started)/60000),seconds=Math.floor((Date.now()-state.started)%60000/1000);
+ return '<div class="submission-row"><p><strong>'+status+'</strong> · <span data-elapsed>起動から '+minutes+'分'+String(seconds).padStart(2,'0')+'秒</span></p>'+
+ '<button class="primary" data-copy'+(available?'':' disabled')+'>履歴をコピー</button><button class="secondary" data-save'+(available?'':' disabled')+'>テキストを保存</button>'+
+ '<p>4本の履歴を同じメモ帳へ貼り付け，1つのテキストファイルとしてMoodleへ提出してください．アプリから自動送信はしません．</p>'+
+ (copyMessage?'<p role="status">'+esc(copyMessage)+'</p>':'')+
+ (manualText?'<label class="tiny">自動コピーできない場合は，以下をすべて選択してコピーしてください．<textarea class="manual-copy" readonly aria-label="手動コピー用の学習履歴">'+esc(manualText)+'</textarea></label>':'')+'</div>';
+}
+function updateSubmission(){
+ const signature=String(C.canSubmit(state))+'|'+String(!!state.passedAt)+'|'+String(storageOK)+'|'+copyMessage+'|'+manualText.length;
+ const elapsed=Math.max(0,Date.now()-state.started),elapsedText='起動から '+Math.floor(elapsed/60000)+'分'+String(Math.floor(elapsed%60000/1000)).padStart(2,'0')+'秒';
+ for(const id of ['record-submit','pass-submit']){
+  const el=document.getElementById(id);if(!el)continue;
+  if(el.dataset.signature!==signature){
+   el.dataset.signature=signature;el.innerHTML=submissionHtml();
+   el.querySelector('[data-copy]').addEventListener('click',copyRecord);el.querySelector('[data-save]').addEventListener('click',saveRecord);
+  }
+  const clock=el.querySelector('[data-elapsed]');if(clock)clock.textContent=elapsedText;
+ }
+}
+function textRecord(){const record=C.exportRecord(state);return '===== 線形代数学I-a 第２回 アプリ '+APP+'｜'+(state.passedAt?'通過済み':'未完了')+' =====\n'+JSON.stringify(record,null,2)+'\n===== 第２回 アプリ '+APP+' ここまで =====\n';}
+async function copyRecord(){
+ if(!C.canSubmit(state)&&storageOK)return;
+ C.log(state,'export',{method:'clipboard',status:state.passedAt?'completed':'incomplete'});persist();const text=textRecord();
+ try{if(!navigator.clipboard||typeof navigator.clipboard.writeText!=='function')throw Error('Clipboard unavailable');await navigator.clipboard.writeText(text);copyMessage='履歴をコピーしました．メモ帳にペーストしよう！';manualText='';}
+ catch(e){manualText=text;copyMessage='自動コピーできませんでした．下の欄から手動でコピーするか，テキストを保存してください．';}
+ updateSubmission();
+ if(manualText){const t=main.querySelector('.manual-copy');if(t){t.focus();t.select();}}
+}
+function saveRecord(){
+ if(!C.canSubmit(state)&&storageOK)return;
+ C.log(state,'export',{method:'file',status:state.passedAt?'completed':'incomplete'});persist();
+ const text=textRecord(),blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='線形代数学Ia_第2回_アプリ'+APP+'_履歴.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ copyMessage='テキストの保存を開始しました．保存先を確認し，4本の履歴を1つにまとめてMoodleへ提出してください．';updateSubmission();
+}
+function readInputs(stage){if(stage.kind==='choice')return state.inputs;const result=[];main.querySelectorAll('.entry').forEach(el=>{result[Number(el.dataset.index)]=el.value;});return result;}
+function answer(stage,strings){
+ const wasPassed=!!state.passedAt,checked=C.recordAnswer(state,stage,strings);persist();
+ if(!checked.valid){feedback=checked.error;feedbackGood=false;document.getElementById('feedback').textContent=feedback;const incomplete=[...main.querySelectorAll('.entry')].find(el=>{try{C.parseNumber(el.value);return false;}catch(e){return true;}});incomplete?.focus({preventScroll:true});return;}
+ if(!checked.correct){const advice={columns:'入力の x 座標を第1列に，y 座標を第2列に掛けているか確かめましょう．',matrix:'2つの行き先を，左と右の列に並べる順序と，回す向きを確かめましょう．',point:'入力の座標に対応する列と，負号の計算を確かめましょう．',coefficients:'t と t² の係数を別々に集めましょう．元の y 座標の係数も掛けていますか．',choice:'y 軸上にある点の，横方向の座標を考えましょう．',root:'t をくくった後，括弧の中が0になる値を求めましょう．',intersections:'t の値をそのまま座標にせず，x′(t)，y′(t) へ代入しましょう．'};
+  feedback='まだ一致していません．入力は残っています．'+advice[stage.kind];feedbackGood=false;
+  render();
+  main.querySelectorAll('.entry').forEach(el=>{const i=Number(el.dataset.index);el.classList.toggle('invalid',!C.near(checked.values[i],stage.expected[i]));});
+  const incorrect=main.querySelector('.entry.invalid');if(incorrect){incorrect.focus({preventScroll:true});incorrect.select();}
+  return;
+ }
+ feedback='';feedbackGood=true;paused=false;
+ if(!wasPassed&&state.passedAt)recordsOpen=true;
+ render();
+}
+function bind(task,stage){
+ const form=document.getElementById('answer-form');form.addEventListener('submit',e=>{e.preventDefault();answer(stage,readInputs(stage));});
+ const inputs=[...main.querySelectorAll('.entry')];inputs.forEach((input,i)=>{
+  input.addEventListener('input',()=>{state.inputs=readInputs(stage);input.classList.remove('invalid');persist();});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(i<inputs.length-1){inputs[i+1].focus();}else answer(stage,readInputs(stage));}});
+ });
+ main.querySelectorAll('[data-choice]').forEach(button=>button.addEventListener('click',()=>{state.inputs=[button.dataset.choice];answer(stage,state.inputs);}));
+ document.getElementById('hint')?.addEventListener('click',()=>{C.useHelp(state,'hint');state.inputs=readInputs(stage);persist();render();});
+ document.getElementById('solution')?.addEventListener('click',()=>{clearAuto();paused=true;C.useHelp(state,'solution');state.inputs=readInputs(stage);persist();render();});
+ document.getElementById('next')?.addEventListener('click',()=>{C.advance(state);paused=false;feedback='';persist();render(true);});
+ document.getElementById('skip')?.addEventListener('click',()=>{C.startPractice(state);paused=false;feedback='';persist();render(true);});
+ document.getElementById('review')?.addEventListener('click',()=>{state.inputs=readInputs(stage);C.startReview(state);paused=false;feedback='';persist();render(true);window.scrollTo({top:0,behavior:'smooth'});});
+ document.getElementById('reset')?.addEventListener('click',()=>{if(!confirm('このアプリの履歴・進み具合・15分の計時を初期化し，最初の例題へ戻ります．必要な履歴は先に保存してください．初期化しますか？'))return;state=C.createState(APP);paused=false;feedback='';manualText='';copyMessage='';persist();render(true);});
+ document.getElementById('record-panel')?.addEventListener('toggle',e=>{recordsOpen=e.currentTarget.open;});
+ document.getElementById('explore-t')?.addEventListener('input',e=>{
+  state.graphT=Number(e.target.value);persist();
+  const wrap=document.createElement('div');wrap.innerHTML=graphPanel(task,stage);
+  document.getElementById('graph-svg').innerHTML=wrap.querySelector('#graph-svg').innerHTML;
+  document.getElementById('t-value').textContent=String(Math.round(state.graphT*100)/100);
+ });
+}
+function runCurveApp(){
+ const key='senkeiIa.2026.lesson2.app4.v2',version=C.CURVE_VERSION;
+ let data=C.curveCreateState(),canStore=true,storageWarning='',notice='',goodUntil=0,copyText='',copyStatus='',timer=null,recordOpen=false;
+ const $=id=>document.getElementById(id),partName={coefficients:'座標式',intersections:'共有点'};
+ const sheet=()=>data[data.view],task=()=>C.curveTask(data);
+ const validSheet=p=>p&&Number.isInteger(p.index)&&p.index>=0&&Array.isArray(p.required)&&p.required.length>0&&p.required.every(x=>C.CURVE_PARTS.includes(x))&&Array.isArray(p.coefficients)&&p.coefficients.length===4&&Array.isArray(p.points)&&p.points.length>0&&p.points.every(x=>Array.isArray(x)&&x.length===2)&&p.solved&&p.helped&&p.hints&&p.solutions&&p.feedback&&p.lastAnsweredAt;
+ try{const raw=localStorage.getItem(key);if(raw){const saved=JSON.parse(raw);if(saved.schema!==2||saved.version!==version||saved.app!==4||!['practice','example','review'].includes(saved.view)||!validSheet(saved.practice)||!validSheet(saved.example)||!saved.review||!Number.isInteger(saved.review.stage)||saved.review.stage<0||saved.review.stage>3||!Array.isArray(saved.review.inputs)||!Array.isArray(saved.events)||!Array.isArray(saved.completedKeys)||!saved.skills||!Number.isFinite(saved.started))throw Error('invalid');data=saved;}}
+ catch(e){canStore=false;storageWarning='保存された記録を読み込めないか，保存が制限されています．以前の記録は上書きせず，この画面で練習を続けます．閉じる前に履歴をコピーしてください．';}
+ function save(){if(!canStore)return;try{localStorage.setItem(key,JSON.stringify(data));}catch(e){canStore=false;storageWarning='この環境では記録を保存できません．閉じる前に履歴をコピーしてください．';}}
+ function log(type,extra={}){C.log(data,type,extra);}
+ function cancel(){if(timer!==null)clearTimeout(timer);timer=null;}
+ function input(id,value,label,disabled=false){return '<input class="entry'+(disabled?' correct':'')+'" id="curve-'+id+'" data-curve-input="'+id+'" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(label)+'" value="'+esc(value??'')+'"'+(disabled?' disabled':'')+'>';}
+ function coefficients(values,disabled=false,prefix='c'){
+  return '<div class="coefficient-row math"><span>x′(t) =</span>'+input(prefix+'0',values[0],'x′のtの係数',disabled)+'<span>t + (</span>'+input(prefix+'1',values[1],'x′のt二乗の係数',disabled)+'<span>)t²</span></div><div class="coefficient-row math"><span>y′(t) =</span>'+input(prefix+'2',values[2],'y′のtの係数',disabled)+'<span>t + (</span>'+input(prefix+'3',values[3],'y′のt二乗の係数',disabled)+'<span>)t²</span></div>';
+ }
+ function readDraft(){
+  const p=sheet();main.querySelectorAll('[data-curve-input]').forEach(el=>{const id=el.dataset.curveInput;if(data.view==='review')p.inputs[Number(id.slice(1))]=el.value;else if(id[0]==='c')p.coefficients[Number(id.slice(1))]=el.value;else{const m=id.match(/^p(\d+)([xy])$/);if(m&&p.points[Number(m[1])])p.points[Number(m[1])][m[2]==='x'?0:1]=el.value;}});
+ }
+ function graph(){
+  const p=sheet();let showCoordinates,showPoints;
+  if(data.view==='review'){showCoordinates=p.stage>0||p.solved||p.solution;showPoints=p.stage===3&&(p.solved||p.solution);}
+  else{showCoordinates=p.solved.coefficients||p.solutions.coefficients||!p.required.includes('coefficients');showPoints=p.solved.intersections||p.solutions.intersections;}
+  return graphPanel(task(),{kind:showPoints?'intersections':'coefficients'},{mode:'practice',status:showPoints?'correct':'working',stageSolution:false,stage:showCoordinates?1:0,graphT:p.graphT});
+ }
+ function solvedFormula(q){const s=C.stagesFor(q)[0];return '<p class="math">x′(t) = ('+val(s.expected[0])+')t + ('+val(s.expected[1])+')t²<br>y′(t) = ('+val(s.expected[2])+')t + ('+val(s.expected[3])+')t²</p>';}
+ function help(part){const p=sheet(),stages=C.stagesFor(task());let html='';
+  if(p.hints[part])html+='<div class="guide"><strong>ヒント</strong><p>'+esc(part==='coefficients'?stages[0].hint:'y 軸上では横方向の座標が0になります．座標式からその条件を満たす t をすべて求め，座標の式に代入しよう．')+'</p></div>';
+  if(p.solutions[part])html+='<div class="guide"><strong>'+partName[part]+'の解説</strong>'+ (part==='coefficients'?'<p>'+esc(stages[0].explanation)+'</p>':stages.slice(1).map(s=>'<p>'+esc(s.explanation)+'</p>').join(''))+'<p class="tiny">解説を使った記録を残します．ほかの部分で確認できたことは取り消しません．</p></div>';
+  return html;
+ }
+ function partControls(part){const p=sheet();return '<div class="help-row"><button type="button" class="text-button" id="hint-'+part+'">ヒント</button><button type="button" class="text-button" id="solution-'+part+'">'+(p.solved[part]?'解説を読む':'解説を見る')+'</button></div>'+help(part)+'<p class="feedback'+(p.solved[part]?' success':'')+'" role="status">'+esc(p.feedback[part]||'')+'</p>';}
+ function normalForm(){
+  const p=sheet(),q=task();let html='<form id="curve-form" novalidate>';
+  if(p.required.includes('coefficients'))html+='<section><h3>1) 回転後の座標を t で表そう</h3>'+coefficients(p.coefficients,p.solved.coefficients)+partControls('coefficients')+'</section>';
+  else html+='<div class="formula-note"><p>今回は共有点を求める部分を確かめよう．座標式を使ってよい．</p>'+solvedFormula(q)+'</div>';
+  if(p.required.includes('intersections')){
+   html+='<section><h3>'+ (p.required.length===2?'2) ':'')+'回転した曲線と y 軸の共有点をすべて求めよう</h3><p class="tiny">必要な点を追加して，座標を入力します．点の順序は自由です．</p>';
+   html+=p.points.map((point,i)=>'<div class="coordinate-row math"><span>(</span>'+input('p'+i+'x',point[0],(i+1)+'個目の共有点のx座標',p.solved.intersections)+'<span>,</span>'+input('p'+i+'y',point[1],(i+1)+'個目の共有点のy座標',p.solved.intersections)+'<span>)</span>'+(!p.solved.intersections&&p.points.length>1?'<button type="button" class="text-button" data-remove-point="'+i+'" aria-label="'+(i+1)+'個目の点を削除">削除</button>':'')+'</div>').join('');
+   if(!p.solved.intersections)html+='<button type="button" class="secondary" id="add-point">共有点を追加</button>';
+   html+=partControls('intersections')+'</section>';
+  }
+  if(!p.complete)html+='<div class="action-row"><button class="primary" id="curve-check" type="submit">答えを確かめる</button></div>';
+  html+='<p class="input-help">分数は -1/2，根号は √3 または sqrt(3) と入力できます．Enterで次の欄へ進み，最後の欄で確認します．正しい小問はそのまま残ります．</p></form>';
+  if(p.complete)html+='<div class="success-card"><strong>'+(data.view==='example'?'例題を確認しました':data.passedAt?'通過しました':'この問題を確認しました')+'</strong><p>'+ (data.view==='example'?'例題の記録は通過に含めません．':data.passedAt?'履歴をコピーできます．追加で練習しても通過の記録は残ります．':'解説を使った部分を含め，取り組んだ記録は残ります．')+'</p><button class="secondary" id="curve-next">'+(data.view==='example'?'通常練習に戻る':data.passedAt?'続けて練習する':data.completedKeys.length>=2?'まだ自力で確認していない部分へ':'次の問題へ')+'</button></div>';
+  return html;
+ }
+ function reviewForm(){
+  const p=data.review,stages=C.stagesFor(task()),s=stages[p.stage];let html='<label>復習する段階：<select id="review-stage">'+stages.map((x,i)=>'<option value="'+i+'"'+(p.stage===i?' selected':'')+'>'+(i+1)+') '+esc(x.title)+'</option>').join('')+'</select></label><h3>'+esc(s.title)+'</h3><div class="guide"><p>'+esc(s.hint)+'</p><p>'+esc(s.explanation)+'</p></div><form id="review-form" novalidate>';
+  if(p.stage===0)html+=coefficients(p.inputs,p.solved,'r');
+  else if(p.stage===1)html+=solvedFormula(task())+'<div class="choice-grid">'+s.options.map((x,i)=>'<button type="button" class="choice" data-review-choice="'+i+'"'+(p.solved?' disabled':'')+'>'+esc(x)+'</button>').join('')+'</div>';
+  else if(p.stage===2)html+=solvedFormula(task())+'<div class="coordinate-row math"><span>t = 0 または t =</span>'+input('r0',p.inputs[0],s.labels[0],p.solved)+'</div>';
+  else html+=solvedFormula(task())+'<p>t=0 と，0でない方の t を代入しよう．</p>'+[0,1].map(i=>'<div class="coordinate-row math"><span>(</span>'+input('r'+(2*i),p.inputs[2*i],s.labels[2*i],p.solved)+'<span>,</span>'+input('r'+(2*i+1),p.inputs[2*i+1],s.labels[2*i+1],p.solved)+'<span>)</span></div>').join('');
+  if(!p.solved&&p.stage!==1)html+='<button class="primary" type="submit">答えを確かめる</button>';
+  html+='</form>';
+  if(p.solved)html+='<button class="secondary" id="review-next">'+(p.stage===3?'通常練習に戻る':'次の段階へ')+'</button>';
+  return html;
+ }
+ function historyText(){return '===== 線形代数学I-a 第２回 アプリ 4｜'+(data.passedAt?'通過済み':'未完了')+' =====\n'+JSON.stringify({course:'線形代数学I-a',lesson:2,app:4,version,notationRevision:'2026-10-06.1',submissionStatus:data.passedAt?'completed':'in-progress',submissionAvailable:true,exportedAt:new Date().toISOString(),completionRule:'異なる2大問を完成し，座標式・共有点を各1回解説なしで確認（支援付きの完成も残す）',timingNote:'別タブ・休止を含む経過時間です．',...data},null,2)+'\n===== 第２回 アプリ 4 ここまで =====\n';}
+ async function copy(){log('export',{method:'clipboard'});save();const text=historyText();try{if(!navigator.clipboard?.writeText)throw Error('clipboard');await navigator.clipboard.writeText(text);copyStatus='履歴をコピーしました．メモ帳にペーストしよう！';copyText='';}catch(e){copyText=text;copyStatus='自動コピーが使えません．下の欄を選択してコピーしてください．';}render();if(copyText){$('curve-manual').focus();$('curve-manual').select();}}
+ function download(){log('export',{method:'file'});save();const url=URL.createObjectURL(new Blob([historyText()],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='線形代数学Ia_第2回_アプリ4_v2_履歴.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);copyStatus='テキストの保存を開始しました．保存先を確認してください．';render();}
+ function switchView(view){readDraft();cancel();goodUntil=0;notice='';log('view-changed',{from:data.view,to:view});data.view=view;if(!data[view].entered){data[view].shownAt=Date.now();data[view].entered=true;}save();render();}
+ function render(){
+  const p=sheet(),q=task(),review=data.view==='review',missing=C.CURVE_PARTS.filter(x=>!data.skills[x]);
+  if(!p.entered){p.entered=true;save();}
+  main.innerHTML=(storageWarning?'<div class="storage-warning">'+esc(storageWarning)+'</div>':'')+'<div class="statusbar"><span class="badge">'+(review?'例題の段階復習':data.view==='example'?'講義の例題を解く':'通常練習 · 第'+(p.index+1)+'問')+'</span><span class="progress">'+(data.passedAt?'通過済み':'大問 '+Math.min(2,data.completedKeys.length)+' / 2　自力で確認：'+(data.skills.coefficients?'座標式 ✓':'座標式 未')+'・'+(data.skills.intersections?'共有点 ✓':'共有点 未'))+'</span></div><div class="action-row" aria-label="学習方法">'+[['example','例題を試す'],['practice','類題で練習する'],['review','考え方をステップで復習']].map(([v,label])=>'<button class="'+(data.view===v?'primary':'secondary')+'" id="view-'+v+'" aria-pressed="'+(data.view===v)+'">'+label+'</button>').join('')+'</div><p class="tiny">例題も通常練習と同じ形式です．考え方を見直したいときは段階復習を選べます．</p><div class="layout curve-layout"><section class="panel work">'+taskIntro(q,{})+(!review&&data.view==='practice'&&p.required.length<2?'<p class="guide">大問は2題完成しています．今回は'+p.required.map(x=>partName[x]).join('・')+'だけを自分で確かめよう．</p>':'')+(review?reviewForm():normalForm())+(Date.now()<goodUntil?'<div class="success-card" id="curve-good" role="status"><strong>Good!</strong></div>':'')+(notice?'<p class="feedback" role="status">'+esc(notice)+'</p>':'')+'</section>'+graph()+'</div><details class="record-panel" id="curve-records"'+(recordOpen?' open':'')+'><summary>練習記録と通過条件</summary><p>異なる2大問を完成し，座標式・共有点をそれぞれ1回，解説なしで確認すると通過です．ヒントを使ってかまいません．解説を使って完成した大問も残し，ほかの部分の確認は取り消しません．例題と段階復習は通過に数えません．</p><p>現在：完成 '+data.completedKeys.length+'題．'+(missing.length?'自力で確認する部分：'+missing.map(x=>partName[x]).join('・'):'両方を自力で確認済み')+'．</p><button class="text-button" id="curve-reset">この版の練習を最初から</button></details><section class="record-panel"><h2>履歴を提出する</h2><p>途中でも履歴をコピーできます．未完了の記録も残り，続けて練習してコピーし直せます．第2回の4本分を1つのテキストファイルにまとめ，Moodleへ提出しよう．</p><div class="submission-row"><button class="primary" id="curve-copy">履歴をコピー</button><button class="secondary" id="curve-download">テキスト保存（予備）</button></div><p role="status">'+esc(copyStatus)+'</p>'+(copyText?'<textarea class="manual-copy" id="curve-manual" readonly aria-label="手動コピー用の履歴">'+esc(copyText)+'</textarea>':'')+'</section><p class="bottom-note">回転行列で点の行き先を求める計算が難しい場合は，第2回アプリ3「任意角の回転と点の行き先」を復習しよう．段階復習を見ても進まないときは，式や途中の計算を教員・チューターに見せて質問しよう．授業の区切りでは途中のまま閉じ，このブラウザーで再開できます．</p><footer>線形代数学I-a · 第２回 · アプリ 4 · '+version+'</footer>';
+  bind();
+ }
+ function showGood(){cancel();goodUntil=Date.now()+C.GOOD_MS;timer=setTimeout(()=>{goodUntil=0;timer=null;$('curve-good')?.remove();},C.GOOD_MS);}
+ function submit(){readDraft();const results=C.curveSubmit(data);notice='';if(Object.values(results).some(x=>x.correct))showGood();save();render();}
+ function selectReview(index){readDraft();cancel();goodUntil=0;const p=data.review;p.steps??=[];p.steps[p.stage]={inputs:[...p.inputs],solved:p.solved,solution:p.solution,shownAt:p.shownAt,lastAnsweredAt:p.lastAnsweredAt,graphT:p.graphT};const saved=p.steps[index]||{inputs:[],solved:false,solution:false,shownAt:Date.now(),lastAnsweredAt:null,graphT:0};Object.assign(p,{...saved,inputs:[...saved.inputs],stage:index});notice='';log('review-stage-selected',{stage:index});save();render();}
+ function reviewNext(){cancel();goodUntil=0;const p=data.review;if(!p.solved)return;if(p.stage===3){switchView('practice');return;}selectReview(p.stage+1);}
+ function reviewAnswer(choice){const p=data.review;if(p.solved)return;readDraft();if(choice!==undefined)p.inputs=[String(choice)];const s=C.stagesFor(task())[p.stage],result=C.checkStage(s,p.inputs);if(!result.valid){notice=result.error;render();return;}log('review-answer',{stage:p.stage,raw:[...p.inputs],correct:result.correct,responseTimeMs:Math.max(0,Date.now()-p.shownAt),attemptTimeMs:Math.max(0,Date.now()-(p.lastAnsweredAt??p.shownAt))});p.lastAnsweredAt=Date.now();p.solved=result.correct;notice=result.correct?'':'入力を残しています．解説と入力した式を見比べよう．';save();if(result.correct){cancel();goodUntil=Date.now()+C.GOOD_MS;timer=setTimeout(()=>{goodUntil=0;timer=null;if(data.view==='review'&&p.stage<3)reviewNext();else $('curve-good')?.remove();},C.GOOD_MS);}render();}
+ function bind(){
+  ['practice','example','review'].forEach(v=>$('view-'+v).addEventListener('click',()=>switchView(v)));
+  const fields=[...main.querySelectorAll('[data-curve-input]')].filter(el=>!el.disabled);
+  fields.forEach((el,i)=>{el.addEventListener('input',()=>{readDraft();save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(i<fields.length-1)fields[i+1].focus();else if(data.view==='review')reviewAnswer();else submit();}});});
+  $('curve-form')?.addEventListener('submit',e=>{e.preventDefault();submit();});
+  $('add-point')?.addEventListener('click',()=>{readDraft();sheet().points.push(['','']);save();render();$('curve-p'+(sheet().points.length-1)+'x').focus();});
+  main.querySelectorAll('[data-remove-point]').forEach(el=>el.addEventListener('click',()=>{readDraft();sheet().points.splice(Number(el.dataset.removePoint),1);save();render();}));
+  for(const part of C.CURVE_PARTS)for(const kind of ['hint','solution'])$(kind+'-'+part)?.addEventListener('click',()=>{readDraft();cancel();goodUntil=0;C.curveUseHelp(data,part,kind);save();render();});
+  $('curve-next')?.addEventListener('click',()=>{cancel();goodUntil=0;if(data.view==='example')switchView('practice');else{C.curveNext(data);notice='';save();render();}});
+  $('review-form')?.addEventListener('submit',e=>{e.preventDefault();reviewAnswer();});
+  $('review-stage')?.addEventListener('change',e=>selectReview(Number(e.target.value)));
+  main.querySelectorAll('[data-review-choice]').forEach(el=>el.addEventListener('click',()=>reviewAnswer(el.dataset.reviewChoice)));
+  $('review-next')?.addEventListener('click',reviewNext);
+  $('explore-t')?.addEventListener('input',e=>{sheet().graphT=Number(e.target.value);save();const wrap=document.createElement('div');wrap.innerHTML=graph();$('graph-svg').innerHTML=wrap.querySelector('#graph-svg').innerHTML;$('t-value').textContent=C.exact(sheet().graphT);});
+  $('curve-records').addEventListener('toggle',e=>{recordOpen=e.currentTarget.open;});
+  $('curve-copy').addEventListener('click',copy);$('curve-download').addEventListener('click',download);
+  $('curve-reset').addEventListener('click',()=>{if(!confirm('この版のアプリ4の記録・進み具合を初期化します．必要な履歴は先に保存してください．初期化しますか？'))return;cancel();data=C.curveCreateState();goodUntil=0;notice='';copyText='';copyStatus='';save();render();});
+ }
+ save();render();window.addEventListener('pagehide',()=>{readDraft();save();});
+}
+
+function runQuarterApp(){
+ 'use strict';
+ const version=C.QUARTER_VERSION,key='senkeiIa.2026.lesson2.app2.v2',GOOD=1600,parts=['matrix','P','Q'],names={matrix:'90度回転を表す行列R',P:'点Pの行き先P′',Q:'点Qの行き先Q′'},$=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x)),iso=()=>new Date().toISOString(),width=k=>k==='matrix'?4:2;
+ function item(k){return{draft:Array(width(k)).fill(''),solved:false,assisted:false,hintUsed:false,explanationOpen:false,feedback:'',goodUntil:null,shownAt:null,lastAttemptAt:null};}
+ function sheet(index=0,scope=parts,whole=true){return{index,scope,whole,parts:Object.fromEntries(parts.map(k=>[k,item(k)])),complete:false,shownAt:null};}
+ function fresh(){return{schema:2,version,app:2,startedAt:iso(),phase:'example',example:sheet(),practice:sheet(),guided:{stage:0,items:[]},completedTasks:[],evidence:[],passedAt:null,events:[]};}
+ let data=fresh(),storage=true,readFailure=false;const timers=new Map();
+ function validItem(p,k){return p&&Array.isArray(p.draft)&&p.draft.length===width(k)&&typeof p.solved==='boolean'&&typeof p.assisted==='boolean';}
+ function validSheet(p){return p&&Number.isSafeInteger(p.index)&&p.index>=0&&Array.isArray(p.scope)&&p.scope.length>0&&p.scope.every(k=>parts.includes(k))&&parts.every(k=>validItem(p.parts?.[k],k))&&typeof p.complete==='boolean';}
+ try{const raw=localStorage.getItem(key);if(raw){const s=JSON.parse(raw);if(!s||s.schema!==2||s.version!==version||s.app!==2||!['example','practice','guided'].includes(s.phase)||!validSheet(s.example)||!validSheet(s.practice)||!s.guided||!Number.isInteger(s.guided.stage)||s.guided.stage<0||s.guided.stage>2||!Array.isArray(s.guided.items)||s.guided.items.some((p,i)=>p&&!validItem(p,parts[i]))||!Array.isArray(s.events)||!Array.isArray(s.completedTasks)||!Array.isArray(s.evidence)||!Number.isFinite(Date.parse(s.startedAt)))throw Error('保存形式');data=s;}}
+ catch(e){storage=false;readFailure=true;}
+ for(const p of [...Object.values(data.example.parts),...Object.values(data.practice.parts),...data.guided.items])if(p){p.goodUntil=null;if(p.feedback==='Good!')p.feedback='確認できました．';}
+ const current=()=>data[data.phase],task=()=>C.quarterProblem(data.phase==='practice'?'practice':'tutorial',data.phase==='practice'?data.practice.index:0),coverage=()=>C.quarterCoverage(data.completedTasks,data.evidence),guide=()=>data.guided.items[data.guided.stage]??=item(parts[data.guided.stage]);
+ function log(type,extra={}){data.events.push({type,at:iso(),...extra});}
+ function save(){if(!readFailure)try{localStorage.setItem(key,JSON.stringify(data));storage=true;}catch(e){storage=false;}records();}
+ function conditions(q){return{problemKey:q.problemKey,index:q.index,A:q.A,angle:q.angle,points:q.points};}
+ function shown(){const q=task();if(data.phase==='guided'){const p=guide();if(!p.shownAt){p.shownAt=iso();log('question-shown',{phase:'guided',part:parts[data.guided.stage],conditions:conditions(q),presentedAt:p.shownAt});}}else{const p=current();if(!p.shownAt){p.shownAt=iso();for(const k of p.scope)p.parts[k].shownAt=p.shownAt;log('question-shown',{phase:data.phase,scope:p.scope,conditions:conditions(q),presentedAt:p.shownAt});}}}
+ function timing(p){const now=iso(),r={presentedAt:p.shownAt,answeredAt:now,responseTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.shownAt)),attemptTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.lastAttemptAt||p.shownAt)),elapsedSinceLaunchMs:Math.max(0,Date.parse(now)-Date.parse(data.startedAt))};p.lastAttemptAt=now;return r;}
+ function cancel(){for(const t of timers.values())clearTimeout(t);timers.clear();}
+ function feedback(k,p,text){p.feedback=text;const el=$('feedback-'+k);if(el){el.textContent=text;el.classList.toggle('success',p.solved);}}
+ function schedule(k,p){if(timers.has(k))clearTimeout(timers.get(k));if(!p.goodUntil)return;const phase=data.phase,index=phase==='guided'?data.guided.stage:current().index,stamp=p.goodUntil;timers.set(k,setTimeout(()=>{timers.delete(k);if(data.phase!==phase||(phase==='guided'?data.guided.stage:current().index)!==index||p.goodUntil!==stamp)return;p.goodUntil=null;feedback(k,p,'確認できました．');save();if(k==='guided'&&!p.explanationOpen&&data.guided.stage<2)selectGuide(data.guided.stage+1);},Math.max(0,Date.parse(stamp)-Date.now())));}
+ function good(k,p){feedback(k,p,'Good!');p.goodUntil=new Date(Date.now()+GOOD).toISOString();schedule(k,p);}
+ function known(p,k){return!p.scope.includes(k)||p.parts[k].solved||p.parts[k].explanationOpen;}
+ function ready(p,k){return k==='matrix'||!p.scope.includes('matrix')||p.parts.matrix.solved;}
+ function focusFirst(){const el=Array.from(document.querySelectorAll('#quarter-exercise [data-answer]')).find(el=>!el.disabled);if(el)el.focus({preventScroll:true});}
+ function switchView(phase){cancel();data.phase=phase;log('view-changed',{phase});render();save();focusFirst();}
+ function selectGuide(stage){if(!Number.isInteger(stage)||stage<0||stage>2)return;cancel();data.guided.stage=stage;render();save();focusFirst();}
+ function markComplete(){const p=current(),q=task();if(p.complete||!p.scope.every(k=>p.parts[k].solved))return;p.complete=true;if(data.phase==='practice'){const row={phase:'practice',problemKey:q.problemKey,index:q.index,whole:p.whole,scope:p.scope,support:p.scope.filter(k=>p.parts[k].assisted),completedAt:iso()};data.completedTasks.push(row);log('task-completed',{...row,conditions:conditions(q)});if(coverage().passed&&!data.passedAt){data.passedAt=iso();log('passed',{coverage:coverage()});}}}
+ function check(){const p=current(),q=task();if(p.complete)return;let accepted=false;for(const k of p.scope){const s=p.parts[k];if(s.solved)continue;if(!ready(p,k)){feedback(k,s,'行列Rを確かめてから，この点の行き先を確認します．');continue;}const result=C.checkQuarterPart(q,k,s.draft);if(!result.valid){feedback(k,s,result.error);continue;}log('answer',{phase:data.phase,part:k,conditions:conditions(q),raw:clone(s.draft),values:result.values,correct:result.correct,hintUsed:s.hintUsed,answerShownBefore:s.assisted,...timing(s)});if(!result.correct){feedback(k,s,k==='matrix'?'(1,0)，(0,1)の行き先を，第1列，第2列の順に並べます．回す向きと負号を確かめよう．':'点'+k+'の座標に対応する列と，負号の計算を確かめよう．入力は残しています．');continue;}s.solved=true;accepted=true;if(data.phase==='practice')data.evidence.push({phase:'practice',part:k,problemKey:q.problemKey,nonInteger:k!=='matrix'&&q.points[k==='P'?0:1].p.some(n=>!Number.isInteger(n)),assisted:s.assisted,verifiedAt:iso()});Array.from(document.querySelectorAll('#quarter-exercise [data-part]')).filter(el=>el.dataset.part===k).forEach(el=>el.disabled=true);good(k,s);}markComplete();updateMath();completion();save();if(accepted&&!p.complete)focusFirst();}
+ function checkGuide(){const p=guide(),q=task(),k=parts[data.guided.stage];if(p.solved)return;const result=C.checkQuarterPart(q,k,p.draft);if(!result.valid){feedback('guided',p,result.error);save();return;}log('answer',{phase:'guided',part:k,conditions:conditions(q),raw:clone(p.draft),correct:result.correct,answerShownBefore:true,...timing(p)});if(!result.correct){feedback('guided',p,'解説の式と入力を見比べよう．入力は残しています．');save();return;}p.solved=true;document.querySelectorAll('#quarter-exercise [data-answer]').forEach(el=>el.disabled=true);good('guided',p);completion();save();}
+ function next(){if(!data.practice.complete)return;cancel();const p=C.quarterPlan(data.completedTasks,data.evidence,data.practice.index+1);data.practice=sheet(p.index,p.scope,p.whole);render();save();focusFirst();}
+ function useHelp(k,reveal){const p=current();if(!ready(p,k))return;const s=p.parts[k];if(reveal){s.explanationOpen=true;if(!s.solved)s.assisted=true;}else s.hintUsed=true;log(reveal?'solution-shown':'hint',{phase:data.phase,part:k,afterCorrect:s.solved,conditions:conditions(task())});render();save();}
+ function hint(k){return C.stagesFor(task())[parts.indexOf(k)].hint;}
+ function solution(k){const q=task(),s=C.stagesFor(q)[parts.indexOf(k)];if(k==='matrix')return '<p>(1,0)は(0,1)へ，(0,1)は(−1,0)へ写ります．それぞれの行き先を第1列，第2列に並べます．</p><div class="math-block"><span class="math">R = </span>'+matrix(q.A,2)+'</div>';return '<p>点'+k+txtPoint(q.points[k==='P'?0:1].p)+'の列ベクトルに，左からRを掛けます．</p><div class="math-block">'+matrix(q.A,2)+matrix(q.points[k==='P'?0:1].p)+'<span class="operator">=</span>'+matrix(s.expected)+'</div><p>'+esc(s.explanation)+'</p>';}
+ function fields(k,p,guided=false){const q=task(),n=width(k),id=guided?'guided':k,slots=n===4?[0,2,1,3]:[0,1],lhs=k==='matrix'?'<span class="math">R =</span>':'<span class="math" id="lhs-'+id+'">'+((guided||known(current(),'matrix'))?matrix(q.A,2):'R')+matrix(q.points[k==='P'?0:1].p)+' =</span>';return '<div class="quarter-equation">'+lhs+'<span class="matrix input-matrix" style="--cols:'+(n===4?2:1)+';'+(n===4?'grid-auto-flow:column;grid-template-rows:repeat(2,auto);':'')+'">'+slots.map(i=>'<input id="answer-'+id+'-'+i+'" class="entry" data-part="'+id+'" data-answer="'+i+'" type="text" autocomplete="off" spellcheck="false" aria-label="'+names[k]+'の'+(n===4?(Math.floor(i/2)+1)+'行'+(i%2+1)+'列':(i===0?'x':'y')+'座標')+'" value="'+esc(p.draft[i]||'')+'" '+(p.solved?'disabled':'')+'>').join('')+'</span></div>';}
+ function panel(k){const p=current(),s=p.parts[k],q=task();return '<section class="quarter-part"><h3>'+names[k]+'</h3>'+(k!=='matrix'?'<p>元の点 '+k+txtPoint(q.points[k==='P'?0:1].p)+'</p>':'<p>(1,0)，(0,1)の行き先を列に並べよう．</p>')+fields(k,s)+'<div class="help-row"><button id="hint-'+k+'" type="button" class="text-button" '+(ready(p,k)?'':'disabled')+'>ヒント</button><button id="solution-'+k+'" type="button" class="text-button" '+(ready(p,k)?'':'disabled')+'>この部分の解説</button></div>'+(s.hintUsed?'<div class="guide">'+hint(k)+'</div>':'')+(s.explanationOpen?'<div class="guide">'+solution(k)+'</div>':'')+'<p id="feedback-'+k+'" class="feedback'+(s.solved?' success':'')+'" role="status">'+esc(s.feedback)+'</p><div id="plot-'+k+'"></div></section>';}
+ function graph(k,show){const q=task(),basis=k==='matrix',sources=basis?[[1,0],[0,1]]:[q.points[k==='P'?0:1].p],range=basis?1.6:Math.max(3,...sources.flat().map(Math.abs))+1,unit=115/range,pos=p=>[150+p[0]*unit,150-p[1]*unit],step=basis?.5:1;let svg='';
+  for(let n=-Math.floor(range/step)*step;n<=range;n+=step){const a=150+n*unit;svg+='<line x1="'+a+'" y1="20" x2="'+a+'" y2="280" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/><line x1="20" y1="'+a+'" x2="280" y2="'+a+'" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/>';if(n&&(basis?Number.isInteger(n):Math.abs(Math.abs(n)-Math.floor(range/step)*step)<1e-8))svg+='<text x="'+a+'" y="165" text-anchor="middle">'+C.exact(n)+'</text><text x="137" y="'+(150-n*unit+4)+'" text-anchor="end">'+C.exact(n)+'</text>';}
+  if(basis)svg+='<circle cx="150" cy="150" r="'+unit+'" fill="none" stroke="#cedbdd"/>';
+  svg+='<text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
+  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):k+txtPoint(p),labelSide=p[0]<0&&z[0]-9-label.length*7>=12?-1:z[0]+9+label.length*7>288?-1:1;svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/><text x="'+(z[0]+labelSide*9)+'" y="'+(z[1]>150?z[1]+19:z[1]-10)+'" text-anchor="'+(labelSide<0?'end':'start')+'" fill="'+color+'">'+esc(label)+'</text>';if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':k+'′'+txtPoint(image);svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+(basis?color:'#a36320')+'" stroke-width="2.5"/><circle class="image-point" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+(basis?color:'#a36320')+'"/><text x="'+(end[0]+(basis?(end[0]<=150?-12:12):(end[0]>210?-9:9)))+'" y="'+(end[1]+(basis||image[1]>=0?-10:19))+'" text-anchor="'+(basis?(end[0]<=150?'end':'start'):(end[0]>210?'end':'start'))+'" fill="'+(basis?color:'#a36320')+'">'+esc(out)+'</text>';}});
+  return '<svg class="quarter-plot" viewBox="0 0 300 300" role="img" aria-label="'+names[k]+'を確かめる図">'+svg+'<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/></svg><p class="tiny">1目盛りは'+C.exact(step)+'です．'+(show?'破線は元の点，実線は90度回転後の行き先です．':'答えを確認すると，90度回転後の行き先を表示します．')+'</p>';
+ }
+ function updateMath(){if(data.phase==='guided'){const k=parts[data.guided.stage];if($('plot-guided'))$('plot-guided').innerHTML=graph(k,true);return;}const p=current(),q=task();for(const k of p.scope){if($('plot-'+k))$('plot-'+k).innerHTML=graph(k,known(p,k));if($('lhs-'+k))$('lhs-'+k).innerHTML=(known(p,'matrix')?matrix(q.A,2):'R')+matrix(q.points[k==='P'?0:1].p)+' =';if($('solution-'+k))$('solution-'+k).disabled=!ready(p,k);if($('hint-'+k))$('hint-'+k).disabled=!ready(p,k);}}
+ function question(p){if(!p.whole)return '今回は'+p.scope.map(k=>names[k]).join('，')+'だけを求めよう．';return p.scope.includes('matrix')?'原点を中心に反時計回りに90度回転する行列Rを作り，点P・Qの行き先を求めよう．':'原点を中心に反時計回りに90度回転する行列Rを使い，点P・Qの行き先を求めよう．';}
+ function render(){shown();const q=task(),guided=data.phase==='guided';let html='<div class="quarter-views">'+[['example','例題を試す'],['practice','類題で練習する'],['guided','考え方をステップで復習']].map(([v,t])=>'<button id="view-'+v+'" class="'+(data.phase===v?'primary':'secondary')+'">'+t+'</button>').join('')+'</div><div class="statusbar"><strong>'+(guided?'講義例題の復習':data.phase==='example'?'講義例題':current().whole?'類題 '+(current().index+1):'必要な部分を確かめる類題')+'</strong><span class="badge">'+(data.passedAt?'通過済み':'練習中')+'</span></div><p id="coverageBox" class="tiny"></p>';
+  if(guided){const k=parts[data.guided.stage],p=guide();html+='<p id="questionPrompt" class="problem"><strong>'+names[k]+'を求めよう．</strong></p><label>復習する段階 <select id="guideStage">'+parts.map((k,i)=>'<option value="'+i+'" '+(i===data.guided.stage?'selected':'')+'>'+names[k]+'</option>').join('')+'</select></label><div class="guide">'+solution(k)+'</div><form id="answerForm">'+fields(k,p,true)+(!p.solved?'<button id="check" type="submit" class="primary">答えを確認</button>':'')+'</form><p id="feedback-guided" class="feedback'+(p.solved?' success':'')+'" role="status">'+esc(p.feedback)+'</p><div id="plot-guided"></div>';
+  }else{const p=current();html+='<p id="questionPrompt" class="problem"><strong>'+question(p)+'</strong></p>'+(!p.scope.includes('matrix')?'<div class="guide"><p>'+(coverage().matrix?'自力で確かめた90度回転の行列を使います．':'この部分では90度回転の行列を与えています．')+'</p><div class="math-block"><span class="math">R = </span>'+matrix(q.A,2)+'</div></div>':'')+'<form id="answerForm"><div class="quarter-grid">'+p.scope.map(panel).join('')+'</div>'+(!p.complete?'<button id="check" type="submit" class="primary">まとめて確かめる</button>':'')+'</form>';}
+  html+='<div id="completionArea"></div><p class="tiny">分数・小数も入力できます．Enterで次の欄へ進み，最後の欄で回答できます．行列は第1列の上下，第2列の上下の順です．</p><details><summary>計算で困ったとき・授業中に区切るとき</summary><p>列ベクトルの計算は第2回アプリ1を見直しましょう．このアプリでも考え方をステップで復習できます．途中の計算を教員に見せて質問してもかまいません．</p><p>この回のアプリ全体で授業中は約20分を目安に区切れます．入力と進み具合を保存し，授業後に続けられます．未完了でも履歴をコピーできます．</p></details>';$('quarter-exercise').innerHTML=html;bind();updateMath();completion();records();if(guided)schedule('guided',guide());else for(const k of current().scope)schedule(k,current().parts[k]);
+ }
+ function completion(){const box=$('completionArea');if(!box)return;if(data.phase==='guided'){const p=guide(),i=data.guided.stage;box.innerHTML=p.solved?(i<2?'<div class="button-row"><button id="nextGuide" class="primary">次の段階を復習</button><button id="pauseGuide" class="secondary">解説を読む（自動進行を止める）</button></div>':'<p class="guide">例題を確かめました．復習は通過条件には含めません．</p><button id="startPractice" class="primary">類題で練習する</button>'):'';if($('nextGuide'))$('nextGuide').addEventListener('click',()=>selectGuide(i+1));if($('pauseGuide'))$('pauseGuide').addEventListener('click',()=>{p.explanationOpen=true;log('reading-paused',{phase:'guided',stage:i});save();});if($('startPractice'))$('startPractice').addEventListener('click',()=>switchView('practice'));return;}const p=current();if(!p.complete){box.innerHTML='';return;}if($('check'))$('check').classList.add('hidden');box.innerHTML='<div class="guide"><p>'+(data.phase==='example'?'例題を確かめました．例題は通過条件には含めません．':data.passedAt?'通過しました．履歴をコピーして提出できます．':p.whole?'この組の点を確かめました．支援の利用と自力でできた部分を記録しました．':'必要な部分を確かめました．')+'</p></div><button id="'+(data.phase==='example'?'startPractice':'nextProblem')+'" class="primary">'+(data.phase==='example'?'類題で練習する':data.passedAt?'続けて練習する':'次の類題へ')+'</button>';if($('startPractice'))$('startPractice').addEventListener('click',()=>switchView('practice'));if($('nextProblem'))$('nextProblem').addEventListener('click',next);}
+ function bind(){for(const view of ['example','practice','guided'])$('view-'+view).addEventListener('click',()=>switchView(view));if($('guideStage'))$('guideStage').addEventListener('change',()=>selectGuide(Number($('guideStage').value)));if(data.phase!=='guided')for(const k of current().scope){$('hint-'+k).addEventListener('click',()=>useHelp(k,false));$('solution-'+k).addEventListener('click',()=>useHelp(k,true));}
+  $('answerForm').addEventListener('submit',e=>{e.preventDefault();data.phase==='guided'?checkGuide():check();});const fields=Array.from(document.querySelectorAll('#quarter-exercise [data-answer]'));fields.forEach(el=>{el.addEventListener('input',()=>{const p=data.phase==='guided'?guide():current().parts[el.dataset.part];p.draft[Number(el.dataset.answer)]=el.value;save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();const enabled=fields.filter(x=>!x.disabled),i=enabled.indexOf(el);if(i>=0&&i<enabled.length-1)enabled[i+1].focus();else data.phase==='guided'?checkGuide():check();}});});
+ }
+ function records(){if(!$('quarter-record'))return;const c=coverage();$('quarter-record').textContent='組の完成 '+c.completed+' / 2　行列の自力確認 '+(c.matrix?'済':'未')+'　点P '+Math.min(2,c.points.P)+' / 2・点Q '+Math.min(2,c.points.Q)+' / 2';if($('coverageBox'))$('coverageBox').textContent='組の完成 '+c.completed+' / 2　行列 '+(c.matrix?'自力済':'未')+'　P '+Math.min(2,c.points.P)+' / 2（非整数'+(c.fractional.P?'済':'未')+'）　Q '+Math.min(2,c.points.Q)+' / 2（非整数'+(c.fractional.Q?'済':'未')+'）．P・Qはそれぞれ2回，そのうち小数など整数以外の座標を含む点を1回，自力で確かめます．';$('quarter-warning').classList.toggle('hidden',storage);if(!storage)$('quarter-warning').textContent=readFailure?'保存済みの記録を読み戻せませんでした．元の内容は上書きしていません．現在の履歴をコピーまたは保存してください．':'ブラウザーに保存できません．閉じる前に履歴をコピーまたは保存してください．';$('quarter-status').textContent=data.passedAt?'通過しました．履歴をコピーして提出できます．':'未完了でも今の履歴をコピーできます．続きに取り組み，通過後にコピーし直せます．';}
+ function history(){return '===== 線形代数学I-a 第２回 アプリ 2 =====\n'+JSON.stringify({course:'線形代数学I-a',lesson:2,app:2,title:META.title,version,notationRevision:'2026-10-06.1',exportedAt:iso(),submissionStatus:data.passedAt?'completed':'incomplete',completionRule:{wholePairs:2,matrixIndependent:1,pointIndependent:{P:2,Q:2},nonIntegerInputEachPoint:true,supportedCompletionAllowed:true},coverage:coverage(),timingNote:'別タブ・休止を含む経過時間です．記録は本人の自力理解を保証するものではありません．',...data},null,2)+'\n===== 第２回 アプリ 2 ここまで =====\n';}
+ async function copy(){log('history-copy-requested');save();const text=history();try{if(!navigator.clipboard?.writeText)throw Error('clipboard');await navigator.clipboard.writeText(text);$('quarter-copy-status').textContent='履歴をコピーしました．メモ帳にペーストしよう！';$('quarter-copy-fallback').classList.add('hidden');}catch(e){const box=$('quarter-copy-fallback');box.value=text;box.classList.remove('hidden');box.focus();box.select();$('quarter-copy-status').textContent='下の欄をすべて選んでコピーしてください．テキスト保存も使えます．';}}
+ function download(){log('history-save-requested');save();const url=URL.createObjectURL(new Blob(['\ufeff',history()],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='線形代数学Ia_第2回_アプリ2_v2_履歴.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('quarter-copy-status').textContent='テキストの保存を開始しました．保存先を確認してください．';}
+ function reset(){if(!confirm('この改訂版アプリ2の記録と進み具合を初期化します．旧版や他のアプリの記録は変わりません．初期化しますか？'))return;cancel();data=fresh();readFailure=false;render();save();}
+ main.innerHTML='<style>.quarter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}.quarter-part{min-width:0;border-top:1px solid var(--line);padding-top:14px}.quarter-equation{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;flex-wrap:wrap}.quarter-equation>.math{display:flex;align-items:center;gap:3px}.quarter-equation .entry{width:68px}.quarter-equation .matrix{gap:5px 8px;padding:5px 8px}.quarter-views{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}.quarter-plot{width:100%;max-width:300px;display:block;margin:12px auto 0}.quarter-plot text{font:13px "Yu Gothic",Meiryo,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.quarter-part .feedback:empty{display:none}.quarter-part .feedback{min-height:0;margin:6px 0}.quarter-part .help-row{gap:8px}.quarter-part .help-row button{font-size:.82rem}.quarter-card{margin-top:18px}.quarter-hidden,.hidden{display:none!important}#quarter-exercise select{font:inherit;max-width:100%;min-height:44px}#plot-guided{max-width:330px;margin:auto}.quarter-card textarea{display:block;box-sizing:border-box;width:100%;min-height:160px;margin-top:10px}.quarter-card textarea.hidden{display:none}#quarter-exercise .button-row{display:flex;flex-wrap:wrap;gap:8px}@media(max-width:480px){.quarter-grid{grid-template-columns:minmax(0,1fr)}.quarter-equation .entry{width:61px}.quarter-equation .matrix{margin:0 2px;gap:5px 6px}}</style><p id="quarter-warning" class="guide hidden" role="alert"></p><section id="quarter-exercise" class="panel"></section><section class="panel quarter-card"><p id="quarter-status"></p><p class="tiny">第2回の4本のアプリの履歴を，メモ帳の末尾に順に貼り付け，1つのテキストファイル（.txt）としてMoodleへ提出しましょう．</p><button id="quarter-copy" class="primary">履歴をコピー</button><p id="quarter-copy-status" role="status"></p><textarea id="quarter-copy-fallback" class="hidden" readonly aria-label="手動コピー用の履歴"></textarea><details><summary>練習記録を確認・保存する</summary><p id="quarter-record"></p><div class="button-row"><button id="quarter-download" class="secondary">履歴をテキスト保存</button><button id="quarter-reset" class="secondary">練習を最初から</button></div></details></section>';
+ $('app-goal').textContent='行列の列と点の行き先を結び付け，90度回転を表す行列を使ってみよう．';$('quarter-copy').addEventListener('click',copy);$('quarter-download').addEventListener('click',download);$('quarter-reset').addEventListener('click',reset);
+ if(!data.events.length)log('session-start',{version,app:2});window.Lesson2QuarterApp={KEY:key,VERSION:version,GOOD_MS:GOOD,getState:()=>clone(data),getProblem:()=>clone(task()),getCoverage:()=>clone(coverage()),exportHistory:history};render();save();
+}
+
+function runNormalApp(){
+ 'use strict';
+ const version=C.NORMAL_VERSION,key='senkeiIa.2026.lesson2.app1.v2',GOOD=1600,$=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x)),iso=()=>new Date().toISOString();
+ function item(index=0){return{index,draft:['',''],solved:false,assisted:false,hintUsed:false,explanationOpen:false,feedback:'',goodUntil:null,paused:false,shownAt:null,lastAttemptAt:null};}
+  function componentItem(){return{draft:['','','',''],solved:false,feedback:'',shownAt:null,lastAttemptAt:null};}
+  function fresh(){return{schema:2,version,notationRevision:'2026-10-06.1',app:1,startedAt:iso(),phase:'example',componentCheck:componentItem(),example:{index:0,items:[item(0),item(1)]},practice:item(0),guided:{index:0,stage:0,items:[[],[]]},streak:0,maxStreak:0,evidence:[],passedAt:null,events:[]};}
+ let data=fresh(),storage=true,readFailure=false,timer=null;
+ function validItem(p){return p&&Number.isSafeInteger(p.index)&&p.index>=0&&Array.isArray(p.draft)&&p.draft.length===2&&typeof p.solved==='boolean'&&typeof p.assisted==='boolean';}
+ try{const raw=localStorage.getItem(key);if(raw){const s=JSON.parse(raw);if(!s||s.schema!==2||s.version!==version||s.app!==1||!['example','practice','guided'].includes(s.phase)||!s.example||![0,1].includes(s.example.index)||!Array.isArray(s.example.items)||s.example.items.length!==2||!s.example.items.every(validItem)||!validItem(s.practice)||!s.guided||![0,1].includes(s.guided.index)||![0,1,2].includes(s.guided.stage)||!Array.isArray(s.guided.items)||s.guided.items.length!==2||s.guided.items.some(a=>!Array.isArray(a)||a.some(p=>p&&!validItem(p)))||!Number.isSafeInteger(s.streak)||!Number.isSafeInteger(s.maxStreak)||!Array.isArray(s.evidence)||!Array.isArray(s.events)||!Number.isFinite(Date.parse(s.startedAt)))throw Error('保存形式');data=s;}}
+ catch(e){storage=false;readFailure=true;}
+  if(!data.componentCheck||!Array.isArray(data.componentCheck.draft)||data.componentCheck.draft.length!==4||typeof data.componentCheck.solved!=='boolean')data.componentCheck=componentItem();
+  data.notationRevision='2026-10-06.1';
+ for(const p of [...data.example.items,data.practice,...data.guided.items.flat()])if(p){p.goodUntil=null;if(p.solved)p.paused=true;if(p.feedback==='Good!')p.feedback='確認できました．';}
+ const guided=()=>data.phase==='guided',current=()=>guided()?(data.guided.items[data.guided.index][data.guided.stage]??=item(data.guided.index)):data.phase==='example'?data.example.items[data.example.index]:data.practice;
+ const task=()=>C.normalProblem(data.phase==='practice'?'practice':'tutorial',data.phase==='practice'?data.practice.index:guided()?data.guided.index:data.example.index),coverage=()=>C.normalCoverage(data.evidence,data.streak,data.maxStreak);
+ function conditions(q){return{problemKey:q.problemKey,index:q.index,A:q.A,point:q.point,nonInteger:q.nonInteger};}
+ function log(type,extra={}){data.events.push({type,at:iso(),...extra});}
+ function save(){if(!readFailure)try{localStorage.setItem(key,JSON.stringify(data));storage=true;}catch(e){storage=false;}records();}
+ function cancel(){if(timer!==null)clearTimeout(timer);timer=null;}
+ function pause(p=current()){cancel();p.paused=true;p.goodUntil=null;if(p.feedback==='Good!')p.feedback='確認できました．';}
+ function shown(){const p=current();if(!p.shownAt){p.shownAt=iso();log('question-shown',{phase:data.phase,stage:guided()?data.guided.stage:null,conditions:conditions(task()),presentedAt:p.shownAt});}}
+ function timing(p){const now=iso(),out={presentedAt:p.shownAt,answeredAt:now,responseTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.shownAt)),attemptTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.lastAttemptAt||p.shownAt)),elapsedSinceLaunchMs:Math.max(0,Date.parse(now)-Date.parse(data.startedAt))};p.lastAttemptAt=now;return out;}
+ function feedback(p,text){p.feedback=text;if($('feedback')){$('feedback').textContent=text;$('feedback').classList.toggle('success',p.solved);}}
+ function focusFirst(){const first=Array.from(document.querySelectorAll('#normal-exercise [data-answer]')).find(el=>!el.disabled);if(first)first.focus({preventScroll:true});}
+ function switchView(phase){pause();data.phase=phase;log('view-changed',{phase});render();save();focusFirst();}
+ function selectExample(index){if(![0,1].includes(index))return;pause();data.example.index=index;render();save();focusFirst();}
+ function selectGuide(index,stage){if(![0,1].includes(index)||![0,1,2].includes(stage))return;pause();data.guided.index=index;data.guided.stage=stage;render();save();focusFirst();}
+ function next(){if(!current().solved)return;cancel();if(guided()){if(data.guided.stage<2)selectGuide(data.guided.index,data.guided.stage+1);else if(data.guided.index===0)selectGuide(1,0);return;}if(data.phase==='example'){const remaining=data.example.items.findIndex(p=>!p.solved);if(remaining>=0)selectExample(remaining);else switchView('practice');return;}data.practice=item(C.normalNextIndex(data.practice.index,data.evidence,data.streak,data.maxStreak));render();save();focusFirst();}
+ function canAuto(){if(guided())return data.guided.stage<2;if(data.phase==='example')return data.example.items.some(p=>!p.solved);return !data.passedAt;}
+ function schedule(){cancel();const p=current();if(!p.goodUntil)return;const phase=data.phase,stamp=p.goodUntil;timer=setTimeout(()=>{timer=null;if(data.phase!==phase||current()!==p||p.goodUntil!==stamp)return;p.goodUntil=null;feedback(p,'確認できました．');save();if(!p.paused&&canAuto())next();},Math.max(0,Date.parse(stamp)-Date.now()));}
+ function check(){
+  const p=current(),q=task();if(p.solved)return;
+  const result=guided()?C.checkStage({expected:guideExpected(q,data.guided.stage)},p.draft):C.checkNormalAnswer(q,p.draft);
+  if(!result.valid){feedback(p,result.error);save();return;}
+  log('answer',{phase:data.phase,stage:guided()?data.guided.stage:null,conditions:conditions(q),raw:clone(p.draft),values:result.values,correct:result.correct,hintUsed:p.hintUsed,answerShownBefore:guided()||p.assisted,...timing(p)});
+  if(!result.correct){if(data.phase==='practice')data.streak=0;feedback(p,'行列の列と点の座標の対応，負号の計算を確かめよう．入力は残しています．');save();return;}
+  p.solved=true;
+  if(data.phase==='practice'){
+   data.evidence.push({phase:'practice',problemKey:q.problemKey,nonInteger:q.nonInteger,assisted:p.assisted,verifiedAt:iso()});
+   if(p.assisted)data.streak=0;else data.streak++;
+   data.maxStreak=Math.max(data.maxStreak,data.streak);log('point-completed',{conditions:conditions(q),independent:!p.assisted,coverage:coverage()});
+   if(coverage().passed&&!data.passedAt){data.passedAt=iso();log('passed',{coverage:coverage()});}
+  }
+  p.paused=p.explanationOpen;feedback(p,'Good!');p.goodUntil=new Date(Date.now()+GOOD).toISOString();
+  document.querySelectorAll('#normal-exercise [data-answer]').forEach(el=>el.disabled=true);if($('check'))$('check').classList.add('hidden');
+  updateMath();completion();save();schedule();
+ }
+ function useHelp(reveal){const p=current();if(reveal){if(!p.solved&&data.phase==='practice')data.streak=0;if(!p.solved)p.assisted=true;p.explanationOpen=true;pause(p);}else p.hintUsed=true;log(reveal?'solution-shown':'hint',{phase:data.phase,conditions:conditions(task()),afterCorrect:p.solved});render();save();}
+ function guideExpected(q,stage){const A=q.A,[x,y]=q.point.p;return stage===0?[A[0]*x,A[2]*x]:stage===1?[A[1]*y,A[3]*y]:q.expected;}
+  const geometric=name=>'<span class="gvec">'+name+'</span>',numeric=name=>'<span class="nvec">'+name+'</span>',basis=axis=>'<span class="basis-symbol">'+geometric('e')+'<sub>'+axis+'</sub></span>';
+  function componentPanel(){
+   const p=data.componentCheck;if(!p.shownAt)p.shownAt=iso();
+   const fields=(name,offset)=>'<span class="component-vector"><span class="math">'+numeric(name)+' =</span><span class="matrix input-matrix" style="--cols:1">'+[0,1].map(i=>'<input id="component-'+(offset+i)+'" class="entry" data-component="'+(offset+i)+'" type="text" autocomplete="off" spellcheck="false" aria-label="幾何ベクトル'+name+'の成分表示の'+(i?'下':'上')+'の成分" value="'+esc(p.draft[offset+i])+'" '+(p.solved?'disabled':'')+'>').join('')+'</span>'+(offset===0?'<span class="operator">,</span>':'')+'</span>';
+   // Fixed-size heads start at the shaft ends and reach the intended grid points.
+   return '<details class="component-introduction" '+(p.solved&&!p.feedback.startsWith('Good!')?'':'open')+'><summary>はじめに：幾何ベクトルの成分表示を求める</summary><p>原点から点(1,0)へ向かう幾何ベクトルを'+basis('x')+'，点(0,1)へ向かう幾何ベクトルを'+basis('y')+'とします．図の'+geometric('a')+'，'+geometric('b')+'をこの2本の1次結合で表し，係数を並べた列ベクトル'+numeric('a')+'，'+numeric('b')+'を答えよう．</p><svg class="component-plot" viewBox="0 0 340 230" role="img" aria-label="原点から右に2，上に1進む幾何ベクトルaと，左に1，上に1進む幾何ベクトルb"><defs><marker id="component-tip" markerWidth="5.25" markerHeight="5.25" viewBox="0 0 7 7" refX="0" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L7 3.5L0 7Z" fill="context-stroke"/></marker><marker id="component-basis-tip" markerWidth="7" markerHeight="7" viewBox="0 0 7 7" refX="0" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L7 3.5L0 7Z" fill="context-stroke"/></marker></defs><path d="M30 155H310M140 210V25" stroke="#899ba1" fill="none"/><path d="M85 45V210M195 45V210M250 45V210M30 100H290M30 45H290" stroke="#cbd6d9" fill="none"/><path d="M140 155L245.304 102.348" stroke="#126e71" stroke-width="3" marker-end="url(#component-tip)"/><path d="M140 155L88.712 103.712" stroke="#a36320" stroke-width="3" marker-end="url(#component-tip)"/><path d="M140 155H188" stroke="#163344" stroke-width="2" fill="none" marker-end="url(#component-basis-tip)"/><path d="M140 155V107" stroke="#163344" stroke-width="2" fill="none" marker-end="url(#component-basis-tip)"/><circle cx="140" cy="155" r="3"/><text x="123" y="177">O</text><text x="310" y="148">x</text><text x="149" y="25">y</text><text x="84" y="176" text-anchor="middle">−1</text><text x="250" y="176" text-anchor="middle">2</text><text x="151" y="91">1</text><text x="258" y="87" fill="#126e71">a</text><path d="M254 69H270L267 66M270 69L267 72" stroke="#126e71" fill="none"/><text x="69" y="87" fill="#a36320">b</text><path d="M65 69H81L78 66M81 69L78 72" stroke="#a36320" fill="none"/><text x="178" y="187">e<tspan dy="5" font-size="10">x</tspan></text><path d="M174 169H190L187 166M190 169L187 172" stroke="#163344" fill="none"/><text x="123" y="128">e<tspan dy="5" font-size="10">y</tspan></text><path d="M119 110H135L132 107M135 110L132 113" stroke="#163344" fill="none"/></svg><p class="math">'+geometric('a')+' = ('+basis('x')+', '+basis('y')+') '+numeric('a')+'．この係数の列ベクトルが成分表示です．</p><form id="componentForm"><div class="normal-equation">'+fields('a',0)+fields('b',2)+'</div>'+(!p.solved?'<button class="primary" type="submit">成分表示を確認</button>':'')+'</form><p id="componentFeedback" class="feedback'+(p.solved?' success':'')+'" role="status">'+esc(p.feedback)+'</p>'+(p.solved?'<p>2本の成分表示を第1列，第2列に並べると，次の行列Aになります．この確認は通常練習の通過数には含めません．</p>':'')+'</details>';
+  }
+  function checkComponents(){
+   const p=data.componentCheck;if(p.solved)return;const result=C.checkStage({expected:[2,1,-1,1]},p.draft);
+   if(result.valid){const now=iso();log('component-answer',{phase:'component-introduction',raw:clone(p.draft),values:result.values,correct:result.correct,presentedAt:p.shownAt,answeredAt:now,responseTimeMs:Date.parse(now)-Date.parse(p.shownAt),attemptTimeMs:Date.parse(now)-Date.parse(p.lastAttemptAt||p.shownAt)});p.lastAttemptAt=now;}
+   p.solved=result.valid&&result.correct;p.feedback=!result.valid?result.error:p.solved?'Good! 成分表示を確認できました．':'横に進む分を上，縦に進む分を下へ書こう．左へ進む分の符号も確かめよう．';
+   render();save();if(p.solved)setTimeout(()=>{if(data.componentCheck!==p)return;p.feedback='成分表示を確認できました．';if($('componentFeedback')){ $('componentFeedback').textContent=p.feedback;const panel=document.querySelector('.component-introduction');if(panel)panel.open=false;focusFirst();}save();},GOOD);
+  }
+ function expanded(q){const first=guideExpected(q,0),second=guideExpected(q,1),[x,y]=q.point.p;return '<p>第1列をx座標の '+val(x)+' 倍，第2列をy座標の '+val(y)+' 倍して，できた2本を足します．</p><div class="normal-sum">'+matrix(first)+'<span class="operator">+</span>'+matrix(second)+'<span class="operator">=</span>'+matrix(q.expected)+'</div><p>'+esc(q.point.name)+'′'+esc(txtPoint(q.expected))+' が求める行き先です．</p>';}
+ function guideExplanation(q,stage){const A=q.A,[x,y]=q.point.p;if(stage<2){const first=stage===0,column=first?[A[0],A[2]]:[A[1],A[3]],factor=first?x:y;return '<p>第'+(stage+1)+'列に，点'+esc(q.point.name)+'の'+(first?'x':'y')+'座標 '+val(factor)+' を掛けます．</p><div class="normal-sum">'+matrix(column)+'<span class="operator">× ('+val(factor)+') =</span>'+matrix(guideExpected(q,stage))+'</div>';}return expanded(q);}
+ function fields(q,p){let lhs=matrix(q.A,2)+matrix(q.point.p);if(guided()){const stage=data.guided.stage;lhs=stage===0?matrix([q.A[0],q.A[2]])+'<span class="operator">× ('+val(q.point.p[0])+')</span>':stage===1?matrix([q.A[1],q.A[3]])+'<span class="operator">× ('+val(q.point.p[1])+')</span>':matrix(guideExpected(q,0))+'<span class="operator">+</span>'+matrix(guideExpected(q,1));}
+  return '<div class="normal-equation">'+lhs+'<span class="operator">=</span><span class="matrix input-matrix" style="--cols:1">'+[0,1].map(i=>'<input id="answer-'+i+'" class="entry" data-answer="'+i+'" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+esc(guided()?'求めるベクトルの第'+(i+1)+'成分':q.point.name+'′の'+(i?'y':'x')+'座標')+'" value="'+esc(p.draft[i]||'')+'" '+(p.solved?'disabled':'')+'>').join('')+'</span></div>';
+ }
+ function graphScale(q){
+  const extent=Math.max(6,Math.ceil(Math.max(...q.point.p.map(Math.abs),...q.expected.map(Math.abs))+.5)),step=extent>8?2:1,bound=Math.ceil(extent/step)*step;
+  return{bound,step,unit:112/bound};
+ }
+ function graph(q,show,image){
+  const p=image?q.expected:q.point.p,{bound,step,unit}=graphScale(q),xy=a=>[150+a[0]*unit,150-a[1]*unit];let out='';
+  for(let n=-bound;n<=bound;n+=step){const x=150+n*unit,y=150-n*unit;if(n)out+='<line x1="'+x+'" y1="38" x2="'+x+'" y2="262" stroke="#ccd5d8"/><line x1="38" y1="'+y+'" x2="262" y2="'+y+'" stroke="#ccd5d8"/>';if(Math.abs(n)===bound)out+='<text class="plot-tick" x="'+x+'" y="170" text-anchor="middle">'+n+'</text><text class="plot-tick" x="137" y="'+(y+4)+'" text-anchor="end">'+n+'</text>';}
+  out+='<path d="M18 150H282M150 282V18" fill="none" stroke="#6d8189" stroke-width="1.2"/>';
+  if(!image||show){const at=xy(p),color=image?'#a36320':'#126e71',label=q.point.name+(image?'′':'')+txtPoint(p),labelWidth=label.length*7.5;let side=p[0]<0?-1:1;if(side>0&&at[0]+7+labelWidth>290)side=-1;if(side<0&&at[0]-7-labelWidth<10)side=1;const labelY=p[1]<0&&at[1]-150<45?Math.max(190,at[1]+18):at[1]-7;out+='<line x1="150" y1="150" x2="'+at[0]+'" y2="'+at[1]+'" stroke="'+color+'" stroke-width="2"/><circle class="'+(image?'image-point':'source-point')+'" cx="'+at[0]+'" cy="'+at[1]+'" r="5" fill="'+color+'"/><text class="point-label" x="'+(at[0]+side*7)+'" y="'+labelY+'" text-anchor="'+(side>0?'start':'end')+'" fill="'+color+'">'+esc(label)+'</text>';}
+  out+='<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/><text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
+  return '<svg viewBox="0 0 300 300" class="normal-plot" role="img" aria-label="'+esc(image?'行列Aによる点'+q.point.name+'の行き先':'元の点'+q.point.name)+'">'+out+'</svg>';
+ }
+ function updateMath(){const q=task(),p=current(),show=guided()||p.solved||p.explanationOpen;if($('plot-source'))$('plot-source').innerHTML=graph(q,show,false);if($('plot-image'))$('plot-image').innerHTML=graph(q,show,true);if($('plot-note'))$('plot-note').textContent='1目盛りは'+graphScale(q).step+'です．'+(show?'元の点と行き先を，同じ目盛り・縮尺で比べます．':'行き先は，答えを確認した後に表示します．');if($('normal-calculation'))$('normal-calculation').innerHTML=!guided()&&p.solved?'<details><summary>2本の列から行き先を確かめる</summary>'+expanded(q)+'</details>':'';const details=$('normal-calculation')?.querySelector('details');if(details)details.addEventListener('toggle',()=>{if(details.open){pause();save();}});}
+ function render(){
+  shown();const q=task(),p=current();let html='<div class="normal-views">'+[['example','例題を試す'],['practice','類題で練習する'],['guided','考え方をステップで復習']].map(([v,t])=>'<button id="view-'+v+'" class="'+(v===data.phase?'primary':'secondary')+'">'+t+'</button>').join('')+'</div><div class="statusbar"><strong>'+(guided()?'講義例題の復習':data.phase==='example'?'講義例題 '+(data.example.index+1):'類題 '+(data.practice.index+1))+'</strong><span class="badge">'+(data.passedAt?'通過済み':'練習中')+'</span></div><p id="coverageBox" class="tiny"></p>';
+   if(data.phase==='example')html+=componentPanel();
+  html+='<p id="questionPrompt" class="problem"><strong>行列Aによる1次変換で，点'+esc(q.point.name+txtPoint(q.point.p))+'の行き先'+esc(q.point.name)+'′の座標を求めよう．</strong></p><div class="math-block"><span class="math">A =</span>'+matrix(q.A,2)+'</div>';
+  if(data.phase==='example')html+='<label>講義例題の点 <select id="exampleIndex">'+['Q(3, 0.5)','R(4, −1)'].map((t,i)=>'<option value="'+i+'" '+(i===data.example.index?'selected':'')+'>'+t+'</option>').join('')+'</select></label><p class="tiny">第1回の例題3で打った点と対応させよう．Q・Rの入力と正解はそれぞれ残ります．</p>';
+  if(guided())html+='<div class="normal-selects"><label>復習する点 <select id="guideIndex">'+['Q(3, 0.5)','R(4, −1)'].map((t,i)=>'<option value="'+i+'" '+(i===data.guided.index?'selected':'')+'>'+t+'</option>').join('')+'</select></label><label>復習する計算 <select id="guideStage">'+['第1列をx座標倍する','第2列をy座標倍する','2本を足して行き先を求める'].map((t,i)=>'<option value="'+i+'" '+(i===data.guided.stage?'selected':'')+'>'+t+'</option>').join('')+'</select></label></div><div class="guide">'+guideExplanation(q,data.guided.stage)+'</div>';
+  html+='<form id="answerForm">'+fields(q,p)+(!p.solved?'<button id="check" type="submit" class="primary">答えを確認</button>':'')+'</form>';
+  if(!guided())html+='<div class="help-row"><button id="hint" class="text-button">ヒント</button><button id="solution" class="text-button">この点の解説</button></div>'+(p.hintUsed?'<div class="guide">第1列を入力のx座標倍，第2列をy座標倍してから，できた2本の列ベクトルを足します．</div>':'')+(p.explanationOpen?'<div class="guide">'+expanded(q)+'</div>':'');
+  html+='<p id="feedback" class="feedback'+(p.solved?' success':'')+'" role="status">'+esc(p.feedback)+'</p><div id="completionArea"></div><div class="normal-plots"><section><h3>元の点 '+esc(q.point.name)+'</h3><div id="plot-source"></div></section><section><h3>行き先 '+esc(q.point.name)+'′</h3><div id="plot-image"></div></section></div><p id="plot-note" class="tiny"></p><div id="normal-calculation"></div><p class="tiny">小数・分数も入力できます．Enterで次の欄へ進み，最後の欄で答えを確認します．</p><details><summary>計算で困ったとき・授業中に区切るとき</summary><p>2本の列を何倍するか迷ったときは，このアプリの「考え方をステップで復習」や第1回アプリ4を見直しましょう．途中の計算を教員に見せて質問してもかまいません．</p><p>第2回のアプリ全体で授業中は約20分を目安に区切れます．途中の入力を残して授業後も続けられます．未完了でも今の履歴をコピーできます．</p></details>';
+  $('normal-exercise').innerHTML=html;bind();updateMath();completion();records();schedule();
+ }
+ function completion(){
+  const box=$('completionArea'),p=current();if(!box)return;if(!p.solved){box.innerHTML='';return;}
+  let label='次の類題へ',message='この点の行き先を確かめました．',id='nextProblem';
+  if(guided()){label=data.guided.stage<2?'次の計算を復習':data.guided.index===0?'Rの計算を復習':'類題で練習する';message='この計算を確かめました．復習は通過数に含めません．';if(data.guided.stage===2&&data.guided.index===1)id='startPractice';}
+  else if(data.phase==='example'){const remaining=data.example.items.findIndex(p=>!p.solved);label=remaining>=0?'残りの例題へ':'類題で練習する';message='この点を確かめました．例題は通過数に含めません．';if(remaining<0)id='startPractice';}
+  else if(data.passedAt){label='続けて練習する';message='通過しました．履歴をコピーして提出できます．';}
+  box.innerHTML='<div class="guide">'+message+'</div><div class="button-row"><button id="'+id+'" class="primary">'+label+'</button>'+(canAuto()?'<button id="pauseNext" class="secondary">図・計算を見比べる（自動進行を止める）</button>':'')+'</div>';
+  $(id).addEventListener('click',()=>id==='startPractice'?switchView('practice'):next());if($('pauseNext'))$('pauseNext').addEventListener('click',()=>{pause();log('reading-paused',{phase:data.phase,conditions:conditions(task())});feedback(p,'確認できました．図と計算を見比べてから進めます．');save();});
+ }
+ function bind(){
+  for(const phase of ['example','practice','guided'])$('view-'+phase).addEventListener('click',()=>switchView(phase));
+   $('componentForm')?.addEventListener('submit',e=>{e.preventDefault();checkComponents();});
+   const componentFields=Array.from(document.querySelectorAll('#normal-exercise [data-component]'));componentFields.forEach((el,i)=>{el.addEventListener('input',()=>{data.componentCheck.draft[Number(el.dataset.component)]=el.value;save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(i<componentFields.length-1)componentFields[i+1].focus();else checkComponents();}});});
+  $('exampleIndex')?.addEventListener('change',()=>selectExample(Number($('exampleIndex').value)));
+  $('guideIndex')?.addEventListener('change',()=>selectGuide(Number($('guideIndex').value),data.guided.stage));
+  $('guideStage')?.addEventListener('change',()=>selectGuide(data.guided.index,Number($('guideStage').value)));
+  $('hint')?.addEventListener('click',()=>useHelp(false));$('solution')?.addEventListener('click',()=>useHelp(true));
+  $('answerForm').addEventListener('submit',e=>{e.preventDefault();check();});
+  const fields=Array.from(document.querySelectorAll('#normal-exercise [data-answer]'));fields.forEach((el,i)=>{el.addEventListener('input',()=>{current().draft[Number(el.dataset.answer)]=el.value;save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(i<fields.length-1)fields[i+1].focus();else check();}});});
+ }
+ function records(){if(!$('normal-record'))return;const c=coverage(),line='連続 '+c.streak+' / 3（最高 '+c.maxStreak+'）　異なる条件で自力確認 '+c.independentTotal+' / 5　整数の点 '+(c.integer?'済':'未')+'・非整数の点 '+(c.nonInteger?'済':'未');$('normal-record').textContent=line;if($('coverageBox'))$('coverageBox').textContent=line+'．3問連続，または異なる5問で自力正解し，整数だけの点と小数などを含む点をそれぞれ1回確認すると通過です．';$('normal-warning').classList.toggle('hidden',storage);if(!storage)$('normal-warning').textContent=readFailure?'保存済みの記録を読み戻せませんでした．元の内容は上書きしていません．現在の履歴をコピーまたは保存してください．':'ブラウザーに保存できません．閉じる前に履歴をコピーまたは保存してください．';$('normal-status').textContent=data.passedAt?'通過しました．履歴をコピーして提出できます．':'未完了でも今の履歴をコピーできます．続きに取り組み，通過後にコピーし直せます．';}
+ function history(){return '===== 線形代数学I-a 第２回 アプリ 1 =====\n'+JSON.stringify({course:'線形代数学I-a',lesson:2,app:1,title:META.title,version,notationRevision:'2026-10-06.1',exportedAt:iso(),submissionStatus:data.passedAt?'completed':'incomplete',completionRule:{independentStreak:3,orDistinctIndependent:5,integerInput:true,nonIntegerInput:true},coverage:coverage(),timingNote:'別タブ・休止を含む経過時間です．記録は本人の自力理解を保証するものではありません．',...data},null,2)+'\n===== 第２回 アプリ 1 ここまで =====\n';}
+ async function copy(){log('history-copy-requested');save();const text=history();try{if(!navigator.clipboard?.writeText)throw Error('clipboard');await navigator.clipboard.writeText(text);$('normal-copy-status').textContent='履歴をコピーしました．メモ帳にペーストしよう！';$('normal-copy-fallback').classList.add('hidden');}catch(e){const box=$('normal-copy-fallback');box.value=text;box.classList.remove('hidden');box.focus();box.select();$('normal-copy-status').textContent='下の欄をすべて選んでコピーしてください．テキスト保存も使えます．';}}
+ function download(){log('history-save-requested');save();const url=URL.createObjectURL(new Blob(['\ufeff',history()],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='線形代数学Ia_第2回_アプリ1_v2_履歴.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('normal-copy-status').textContent='テキストの保存を開始しました．保存先を確認してください．';}
+ function reset(){if(!confirm('この改訂版アプリ1の記録と進み具合を初期化します．旧版や他のアプリの記録は変わりません．初期化しますか？'))return;cancel();data=fresh();readFailure=false;render();save();}
+ main.innerHTML='<style>.normal-views,.normal-selects,.normal-equation,.normal-sum,#normal-exercise .button-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.normal-views{margin-bottom:20px}.normal-selects{margin:14px 0}.normal-equation,.normal-sum{justify-content:center;margin:18px 0}.normal-equation .entry{width:78px}.component-vector{display:inline-flex;align-items:center;gap:6px}.normal-plots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:660px;margin:18px auto}.normal-plots h3{text-align:center;font-size:1rem}.normal-plot{width:100%;display:block}.normal-plot text{font:14px "Yu Gothic",Meiryo,sans-serif}.normal-plot .plot-tick{font-size:13px}.normal-plot .point-label{paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.normal-card{margin-top:18px}.normal-card textarea{box-sizing:border-box;width:100%;min-height:160px;margin-top:10px}.hidden{display:none!important}#normal-exercise select{font:inherit;max-width:100%;min-height:44px}#normal-exercise .feedback:empty{display:none}@media(max-width:480px){.normal-equation{gap:2px}.normal-equation .entry{width:64px}.normal-equation .matrix{gap:5px 7px;padding:5px 7px;margin:0 2px}.normal-plots{grid-template-columns:1fr;gap:14px;max-width:340px}.normal-plots h3{font-size:.9rem}}</style><p id="normal-warning" class="guide hidden" role="alert"></p><section id="normal-exercise" class="panel"></section><section class="panel normal-card"><p id="normal-status"></p><p class="tiny">第2回の4本のアプリの履歴を，メモ帳の末尾に順に貼り付け，1つのテキストファイル（.txt）としてMoodleへ提出しましょう．</p><button id="normal-copy" class="primary">履歴をコピー</button><p id="normal-copy-status" role="status"></p><textarea id="normal-copy-fallback" class="hidden" readonly aria-label="手動コピー用の履歴"></textarea><details><summary>練習記録を確認・保存する</summary><p id="normal-record"></p><div class="button-row"><button id="normal-download" class="secondary">履歴をテキスト保存</button><button id="normal-reset" class="secondary">練習を最初から</button></div></details></section>';
+ $('app-goal').textContent='行列の2本の列と点の座標を結び付け，点の行き先を求めよう．';$('normal-copy').addEventListener('click',copy);$('normal-download').addEventListener('click',download);$('normal-reset').addEventListener('click',reset);
+ if(!data.events.length)log('session-start',{version,app:1});window.Lesson2NormalApp={KEY:key,VERSION:version,GOOD_MS:GOOD,getState:()=>clone(data),getProblem:()=>clone(task()),getCoverage:()=>clone(coverage()),exportHistory:history};render();save();window.addEventListener('pagehide',save);
+}
+
+function runRotationApp(){
+ 'use strict';
+ const version=C.ROTATION_VERSION,key='senkeiIa.2026.lesson2.app3.v2',GOOD=1600,parts=['matrix','point'],names={matrix:'回転を表す行列R',point:'点Pの行き先P′'},$=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x)),iso=()=>new Date().toISOString(),width=k=>k==='matrix'?4:2;
+ function item(k){return{draft:Array(width(k)).fill(''),solved:false,assisted:false,hintUsed:false,explanationOpen:false,feedback:'',goodUntil:null,shownAt:null,lastAttemptAt:null};}
+ function sheet(index=0,scope=parts,whole=true){return{index,scope,whole,parts:Object.fromEntries(parts.map(k=>[k,item(k)])),complete:false,shownAt:null};}
+ function fresh(){return{schema:2,version,app:3,startedAt:iso(),phase:'example',example:sheet(),practice:sheet(),guided:{stage:0,items:[]},completedTasks:[],evidence:[],passedAt:null,events:[]};}
+ let data=fresh(),storage=true,readFailure=false;const timers=new Map();
+ function validItem(p,k){return p&&Array.isArray(p.draft)&&p.draft.length===width(k)&&typeof p.solved==='boolean'&&typeof p.assisted==='boolean';}
+ function validSheet(p){return p&&Number.isSafeInteger(p.index)&&p.index>=0&&Array.isArray(p.scope)&&p.scope.length>0&&p.scope.every(k=>parts.includes(k))&&parts.every(k=>validItem(p.parts?.[k],k))&&typeof p.complete==='boolean';}
+ try{const raw=localStorage.getItem(key);if(raw){const s=JSON.parse(raw);if(!s||s.schema!==2||s.version!==version||s.app!==3||!['example','practice','guided'].includes(s.phase)||!validSheet(s.example)||!validSheet(s.practice)||!s.guided||![0,1].includes(s.guided.stage)||!Array.isArray(s.guided.items)||s.guided.items.some((p,i)=>p&&!validItem(p,parts[i]))||!Array.isArray(s.events)||!Array.isArray(s.completedTasks)||!Array.isArray(s.evidence)||!Number.isFinite(Date.parse(s.startedAt)))throw Error('保存形式');data=s;}}
+ catch(e){storage=false;readFailure=true;}
+ for(const p of [...Object.values(data.example.parts),...Object.values(data.practice.parts),...data.guided.items])if(p){p.goodUntil=null;if(p.feedback==='Good!')p.feedback='確認できました．';}
+ const current=()=>data[data.phase],task=()=>C.rotationProblem(data.phase==='practice'?'practice':'tutorial',data.phase==='practice'?data.practice.index:0),coverage=()=>C.rotationCoverage(data.completedTasks,data.evidence),guide=()=>data.guided.items[data.guided.stage]??=item(parts[data.guided.stage]);
+ function log(type,extra={}){data.events.push({type,at:iso(),...extra});}
+ function save(){if(!readFailure)try{localStorage.setItem(key,JSON.stringify(data));storage=true;}catch(e){storage=false;}records();}
+ function conditions(q){return{problemKey:q.problemKey,index:q.index,type:q.type,angle:q.angle,point:q.point};}
+ function shown(){const q=task();if(data.phase==='guided'){const p=guide();if(!p.shownAt){p.shownAt=iso();log('question-shown',{phase:'guided',part:parts[data.guided.stage],conditions:conditions(q),presentedAt:p.shownAt});}}else{const p=current();if(!p.shownAt){p.shownAt=iso();for(const k of p.scope)p.parts[k].shownAt=p.shownAt;log('question-shown',{phase:data.phase,scope:p.scope,conditions:conditions(q),presentedAt:p.shownAt});}}}
+ function timing(p){const now=iso(),out={presentedAt:p.shownAt,answeredAt:now,responseTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.shownAt)),attemptTimeMs:Math.max(0,Date.parse(now)-Date.parse(p.lastAttemptAt||p.shownAt)),elapsedSinceLaunchMs:Math.max(0,Date.parse(now)-Date.parse(data.startedAt))};p.lastAttemptAt=now;return out;}
+ function cancel(){for(const t of timers.values())clearTimeout(t);timers.clear();}
+ function feedback(k,p,text){p.feedback=text;const el=$('feedback-'+k);if(el){el.textContent=text;el.classList.toggle('success',p.solved);}}
+ function schedule(k,p){if(timers.has(k))clearTimeout(timers.get(k));if(!p.goodUntil)return;const phase=data.phase,index=phase==='guided'?data.guided.stage:current().index,stamp=p.goodUntil;timers.set(k,setTimeout(()=>{timers.delete(k);if(data.phase!==phase||(phase==='guided'?data.guided.stage:current().index)!==index||p.goodUntil!==stamp)return;p.goodUntil=null;feedback(k,p,'確認できました．');save();if(k==='guided'&&!p.explanationOpen&&data.guided.stage===0)selectGuide(1);},Math.max(0,Date.parse(stamp)-Date.now())));}
+ function good(k,p){feedback(k,p,'Good!');p.goodUntil=new Date(Date.now()+GOOD).toISOString();schedule(k,p);}
+ function known(p,k){return!p.scope.includes(k)||p.parts[k].solved||p.parts[k].explanationOpen;}
+ function ready(p,k){return k==='matrix'||!p.scope.includes('matrix')||p.parts.matrix.solved;}
+ function focusFirst(){const el=Array.from(document.querySelectorAll('#rotation-exercise [data-answer]')).find(el=>!el.disabled);if(el)el.focus({preventScroll:true});}
+ function switchView(phase){cancel();if(data.phase==='guided')guide().goodUntil=null;data.phase=phase;log('view-changed',{phase});render();save();focusFirst();}
+ function selectGuide(stage){if(![0,1].includes(stage))return;cancel();guide().goodUntil=null;data.guided.stage=stage;render();save();focusFirst();}
+ function markComplete(){const p=current(),q=task();if(p.complete||!p.scope.every(k=>p.parts[k].solved))return;p.complete=true;if(data.phase==='practice'){const row={phase:'practice',problemKey:q.problemKey,index:q.index,type:q.type,whole:p.whole,scope:p.scope,support:p.scope.filter(k=>p.parts[k].assisted),completedAt:iso()};data.completedTasks.push(row);log('task-completed',{...row,conditions:conditions(q)});if(coverage().passed&&!data.passedAt){data.passedAt=iso();log('passed',{coverage:coverage()});}}}
+ function check(){
+  const p=current(),q=task();if(p.complete)return;let accepted=false;
+  for(const k of p.scope){const s=p.parts[k];if(s.solved)continue;if(!ready(p,k)){feedback(k,s,'行列Rを確かめてから，点Pの行き先を確認します．');continue;}
+   const result=C.checkRotationPart(q,k,s.draft);if(!result.valid){feedback(k,s,result.error);continue;}
+   log('answer',{phase:data.phase,part:k,conditions:conditions(q),raw:clone(s.draft),values:result.values,correct:result.correct,hintUsed:s.hintUsed,answerShownBefore:s.assisted,...timing(s)});
+   if(!result.correct){feedback(k,s,k==='matrix'?'回す向きとsinの符号，各列の並べ方を確かめよう．入力は残しています．':'点Pの座標に対応する列と，負号の計算を確かめよう．入力は残しています．');continue;}
+   s.solved=true;accepted=true;if(data.phase==='practice')data.evidence.push({phase:'practice',part:k,type:q.type,problemKey:q.problemKey,assisted:s.assisted,verifiedAt:iso()});
+   Array.from(document.querySelectorAll('#rotation-exercise [data-part]')).filter(el=>el.dataset.part===k).forEach(el=>el.disabled=true);good(k,s);
+  }
+  markComplete();updateMath();completion();save();if(accepted&&!p.complete)focusFirst();
+ }
+ function checkGuide(){const p=guide(),q=task(),k=parts[data.guided.stage];if(p.solved)return;const result=C.checkRotationPart(q,k,p.draft);if(!result.valid){feedback('guided',p,result.error);save();return;}log('answer',{phase:'guided',part:k,conditions:conditions(q),raw:clone(p.draft),values:result.values,correct:result.correct,answerShownBefore:true,...timing(p)});if(!result.correct){feedback('guided',p,'解説の式と入力を見比べよう．入力は残しています．');save();return;}p.solved=true;document.querySelectorAll('#rotation-exercise [data-answer]').forEach(el=>el.disabled=true);good('guided',p);completion();save();}
+ function next(){if(!data.practice.complete)return;cancel();const plan=C.rotationPlan(data.completedTasks,data.evidence,data.practice.index+1);data.practice=sheet(plan.index,plan.scope,plan.whole);render();save();focusFirst();}
+ function useHelp(k,reveal){const p=current();if(!ready(p,k))return;const s=p.parts[k];if(reveal){s.explanationOpen=true;if(!s.solved)s.assisted=true;}else s.hintUsed=true;log(reveal?'solution-shown':'hint',{phase:data.phase,part:k,afterCorrect:s.solved,conditions:conditions(task())});render();save();}
+ function hint(k){return C.stagesFor(task())[parts.indexOf(k)].hint;}
+ function solution(k){const q=task(),s=C.stagesFor(q)[parts.indexOf(k)];if(k==='matrix')return '<p>(1,0)の行き先は(cosθ, sinθ)，(0,1)の行き先は(−sinθ, cosθ)です．この順で第1列，第2列に並べます．</p><div class="math-block"><span class="math">R =</span>'+matrix(q.A,2)+'</div>';return '<p>点P'+esc(txtPoint(q.point.p))+'の列ベクトルに，左からRを掛けます．</p><div class="math-block">'+matrix(q.A,2)+matrix(q.point.p)+'<span class="operator">=</span>'+matrix(C.rotationPointText(q.angle,q.point.p))+'</div><p>'+esc(s.explanation)+'</p>';}
+ function fields(k,p,guided=false){const q=task(),n=width(k),id=guided?'guided':k,slots=n===4?[0,2,1,3]:[0,1],lhs=k==='matrix'?'<span class="math">R =</span>':'<span class="math" id="lhs-'+id+'">'+((guided||known(current(),'matrix'))?matrix(q.A,2):'R')+matrix(q.point.p)+' =</span>';return '<div class="rotation-equation">'+lhs+'<span class="matrix input-matrix" style="--cols:'+(n===4?2:1)+';'+(n===4?'grid-auto-flow:column;grid-template-rows:repeat(2,auto);':'')+'">'+slots.map(i=>'<input id="answer-'+id+'-'+i+'" class="entry" data-part="'+id+'" data-answer="'+i+'" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="'+names[k]+'の'+(n===4?(Math.floor(i/2)+1)+'行'+(i%2+1)+'列':(i?'y':'x')+'座標')+'" value="'+esc(p.draft[i]||'')+'" '+(p.solved?'disabled':'')+'>').join('')+'</span></div>';}
+ function panel(k){const p=current(),s=p.parts[k],q=task();return '<section class="rotation-part"><h3>'+names[k]+'</h3>'+(k==='point'?'<p>元の点 P'+esc(txtPoint(q.point.p))+'</p>':'<p>(1,0)，(0,1)の行き先を列に並べよう．</p>')+fields(k,s)+'<div class="help-row"><button id="hint-'+k+'" type="button" class="text-button" '+(ready(p,k)?'':'disabled')+'>ヒント</button><button id="solution-'+k+'" type="button" class="text-button" '+(ready(p,k)?'':'disabled')+'>この部分の解説</button></div>'+(s.hintUsed?'<div class="guide">'+hint(k)+'</div>':'')+(s.explanationOpen?'<div class="guide">'+solution(k)+'</div>':'')+'<p id="feedback-'+k+'" class="feedback'+(s.solved?' success':'')+'" role="status">'+esc(s.feedback)+'</p><div id="plot-'+k+'"></div></section>';}
+ function graph(k,show){
+  const q=task(),basis=k==='matrix',sources=basis?[[1,0],[0,1]]:[q.point.p],range=basis?1.6:Math.max(3,...sources.flat().map(Math.abs),...C.apply(q.A,q.point.p).map(Math.abs))+1,unit=112/range,pos=p=>[150+p[0]*unit,150-p[1]*unit],step=basis?.5:range>8?2:1;let svg='';
+  for(let n=-Math.floor(range/step)*step;n<=range;n+=step){const x=150+n*unit,y=150-n*unit;svg+='<line x1="'+x+'" y1="18" x2="'+x+'" y2="282" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/><line x1="18" y1="'+y+'" x2="282" y2="'+y+'" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/>';if(n&&(basis?Number.isInteger(n):Math.abs(Math.abs(n)-Math.floor(range/step)*step)<1e-8))svg+='<text x="'+x+'" y="165" text-anchor="middle">'+n+'</text><text x="137" y="'+(y+4)+'" text-anchor="end">'+n+'</text>';}
+  if(basis)svg+='<circle cx="150" cy="150" r="'+unit+'" fill="none" stroke="#cedbdd"/>';
+  svg+='<text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
+  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):'P'+txtPoint(p),labelSide=p[0]<0&&z[0]-8-label.length*7>=12?-1:z[0]+8+label.length*7>288?-1:1;svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/><text x="'+(z[0]+labelSide*8)+'" y="'+(z[1]>150?z[1]+19:z[1]-10)+'" text-anchor="'+(labelSide<0?'end':'start')+'" fill="'+color+'">'+esc(label)+'</text>';if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':'P′';svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+(basis?color:'#a36320')+'" stroke-width="2.5"/><circle class="'+(basis?'matrix-image-point':'image-point')+'" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+(basis?color:'#a36320')+'"/><text x="'+(end[0]+(basis?(end[0]<=150?-12:12):(end[0]>=150?10:-10)))+'" y="'+(end[1]+(basis||image[1]>=0?-10:19))+'" text-anchor="'+(basis?(end[0]<=150?'end':'start'):(end[0]>=150?'start':'end'))+'" fill="'+(basis?color:'#a36320')+'">'+esc(out)+'</text>';}});
+  return '<svg class="rotation-plot" viewBox="0 0 300 300" role="img" aria-label="'+names[k]+'を確かめる図">'+svg+'<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/></svg>'+(show&&!basis?'<p class="math rotation-point-result">P′ = ('+esc(C.rotationPointText(q.angle,q.point.p).join(', '))+')</p>':'')+'<p class="tiny">1目盛りは'+C.exact(step)+'です．'+(show?'破線は元の点，実線は回転後の行き先です．':'答えを確認すると，回転後の行き先を表示します．')+'</p>';
+ }
+ function updateMath(){if(data.phase==='guided'){if($('plot-guided'))$('plot-guided').innerHTML=graph(parts[data.guided.stage],true);return;}const p=current(),q=task();for(const k of p.scope){if($('plot-'+k))$('plot-'+k).innerHTML=graph(k,known(p,k));if($('lhs-'+k))$('lhs-'+k).innerHTML=(known(p,'matrix')?matrix(q.A,2):'R')+matrix(q.point.p)+' =';if($('solution-'+k))$('solution-'+k).disabled=!ready(p,k);if($('hint-'+k))$('hint-'+k).disabled=!ready(p,k);}}
+ function angle(q){return String(q.angle).replace('-','−')+'°';}
+ function question(p,q){const direction=q.angle<0?'時計回りに'+Math.abs(q.angle)+'°':'反時計回りに'+q.angle+'°';if(p.scope.length===1)return p.scope[0]==='matrix'?'原点を中心に'+direction+'回転する行列Rだけを求めよう．':'与えられた行列Rを使い，点P'+txtPoint(q.point.p)+'を原点のまわりに'+direction+'回転した像P′の座標を求めよう．';return '原点を中心に点P'+txtPoint(q.point.p)+'を'+direction+'回転させる行列Rと，像P′の座標を求めよう．';}
+ function render(){
+  shown();const q=task(),guided=data.phase==='guided';let html='<div class="rotation-views">'+[['example','例題を試す'],['practice','類題で練習する'],['guided','考え方をステップで復習']].map(([v,t])=>'<button id="view-'+v+'" class="'+(data.phase===v?'primary':'secondary')+'">'+t+'</button>').join('')+'</div><div class="statusbar"><strong>'+(guided?'講義例題の復習':data.phase==='example'?'講義例題':current().whole?'類題 '+(current().index+1):'必要な部分を確かめる類題')+'</strong><span class="badge">'+(data.passedAt?'通過済み':'練習中')+'</span></div><p id="coverageBox" class="tiny"></p>';
+  html+='<p id="questionPrompt" class="problem"><strong>'+esc(guided?question({scope:parts},q):question(current(),q))+'</strong></p><p id="trigValues" class="formula-note math">θ = '+angle(q)+'，cos('+angle(q)+') = '+val(q.A[0])+'，sin('+angle(q)+') = '+val(q.A[2])+'</p>';
+  if(guided){const k=parts[data.guided.stage],p=guide();html+='<label>復習する段階 <select id="guideStage">'+parts.map((k,i)=>'<option value="'+i+'" '+(i===data.guided.stage?'selected':'')+'>'+names[k]+'</option>').join('')+'</select></label><div class="guide">'+solution(k)+'</div><form id="answerForm">'+fields(k,p,true)+(!p.solved?'<button id="check" type="submit" class="primary">答えを確認</button>':'')+'</form><p id="feedback-guided" class="feedback'+(p.solved?' success':'')+'" role="status">'+esc(p.feedback)+'</p><div id="plot-guided"></div>';
+  }else{const p=current();html+=(!p.scope.includes('matrix')?'<div class="guide"><p>この角度の行列を使って，点の行き先だけを求めます．</p><div class="math-block"><span class="math">R =</span>'+matrix(q.A,2)+'</div></div>':'')+'<form id="answerForm"><div class="rotation-grid">'+p.scope.map(panel).join('')+'</div>'+(!p.complete?'<button id="check" type="submit" class="primary">まとめて確かめる</button>':'')+'</form>';}
+  html+='<div id="completionArea"></div><p class="tiny">分数・小数・√を入力できます（例：sqrt(3)/2，1+sqrt(2)）．Enterで次の欄へ進み，最後の欄で回答できます．行列は第1列の上下，第2列の上下の順です．</p><details><summary>計算で困ったとき・授業中に区切るとき</summary><p>行列の列の意味は第2回アプリ2，点の行き先の計算はアプリ1を見直しましょう．このアプリでも講義例題の考え方をステップで復習できます．途中の計算を教員に見せて質問してもかまいません．</p><p>この回のアプリ全体で授業中は約20分を目安に区切れます．入力と進み具合を残して授業後に続けられます．未完了でも今の履歴をコピーできます．</p></details>';$('rotation-exercise').innerHTML=html;bind();updateMath();completion();records();if(guided)schedule('guided',guide());else for(const k of current().scope)schedule(k,current().parts[k]);
+ }
+ function completion(){const box=$('completionArea');if(!box)return;if(data.phase==='guided'){const p=guide(),i=data.guided.stage;box.innerHTML=p.solved?(i===0?'<div class="button-row"><button id="nextGuide" class="primary">点の行き先を復習</button><button id="pauseGuide" class="secondary">解説を読む（自動進行を止める）</button></div>':'<p class="guide">例題を確かめました．復習は通過条件には含めません．</p><button id="startPractice" class="primary">類題で練習する</button>'):'';if($('nextGuide'))$('nextGuide').addEventListener('click',()=>selectGuide(1));if($('pauseGuide'))$('pauseGuide').addEventListener('click',()=>{p.explanationOpen=true;log('reading-paused',{phase:'guided',stage:i});save();});if($('startPractice'))$('startPractice').addEventListener('click',()=>switchView('practice'));return;}const p=current();if(!p.complete){box.innerHTML='';return;}if($('check'))$('check').classList.add('hidden');box.innerHTML='<div class="guide"><p>'+(data.phase==='example'?'例題を確かめました．例題は通過条件には含めません．':data.passedAt?'通過しました．履歴をコピーして提出できます．':p.whole?'この角度の回転を確かめました．支援の利用と自力でできた部分を記録しました．':'必要な部分を確かめました．')+'</p></div><button id="'+(data.phase==='example'?'startPractice':'nextProblem')+'" class="primary">'+(data.phase==='example'?'類題で練習する':data.passedAt?'続けて練習する':'次の類題へ')+'</button>';if($('startPractice'))$('startPractice').addEventListener('click',()=>switchView('practice'));if($('nextProblem'))$('nextProblem').addEventListener('click',next);}
+ function bind(){for(const view of ['example','practice','guided'])$('view-'+view).addEventListener('click',()=>switchView(view));if($('guideStage'))$('guideStage').addEventListener('change',()=>selectGuide(Number($('guideStage').value)));if(data.phase!=='guided')for(const k of current().scope){$('hint-'+k).addEventListener('click',()=>useHelp(k,false));$('solution-'+k).addEventListener('click',()=>useHelp(k,true));}
+  $('answerForm').addEventListener('submit',e=>{e.preventDefault();data.phase==='guided'?checkGuide():check();});const fields=Array.from(document.querySelectorAll('#rotation-exercise [data-answer]'));fields.forEach(el=>{el.addEventListener('input',()=>{const p=data.phase==='guided'?guide():current().parts[el.dataset.part];p.draft[Number(el.dataset.answer)]=el.value;save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();const enabled=fields.filter(x=>!x.disabled),i=enabled.indexOf(el);if(i>=0&&i<enabled.length-1)enabled[i+1].focus();else data.phase==='guided'?checkGuide():check();}});});
+ }
+ function records(){if(!$('rotation-record'))return;const c=coverage(),status=C.ROTATION_TYPES.map(type=>type.replace('-','−')+'° '+(c.types[type]?'完成':'未')+'／行列'+(c.matrix[type]?'自力済':'未')).join('　'),line='3種類の完成 '+c.completed+' / 3　'+status+'　像の自力確認 '+(c.point?'済':'未');$('rotation-record').textContent=line;if($('coverageBox'))$('coverageBox').textContent=line+'．60°・−30°・45°を完成し，各角度の行列と，像の計算1回を解答を見ずに確認すると通過です．';$('rotation-warning').classList.toggle('hidden',storage);if(!storage)$('rotation-warning').textContent=readFailure?'保存済みの記録を読み戻せませんでした．元の内容は上書きしていません．現在の履歴をコピーまたは保存してください．':'ブラウザーに保存できません．閉じる前に履歴をコピーまたは保存してください．';$('rotation-status').textContent=data.passedAt?'通過しました．履歴をコピーして提出できます．':'未完了でも今の履歴をコピーできます．続きに取り組み，通過後にコピーし直せます．';}
+ function history(){return '===== 線形代数学I-a 第２回 アプリ 3 =====\n'+JSON.stringify({course:'線形代数学I-a',lesson:2,app:3,title:META.title,version,notationRevision:'2026-10-06.1',exportedAt:iso(),submissionStatus:data.passedAt?'completed':'incomplete',completionRule:{requiredAngles:[60,-30,45],wholeEachAngle:1,matrixIndependentEachAngle:1,pointIndependent:1,supportedCompletionAllowed:true},coverage:coverage(),timingNote:'別タブ・休止を含む経過時間です．記録は本人の自力理解を保証するものではありません．',...data},null,2)+'\n===== 第２回 アプリ 3 ここまで =====\n';}
+ async function copy(){log('history-copy-requested');save();const text=history();try{if(!navigator.clipboard?.writeText)throw Error('clipboard');await navigator.clipboard.writeText(text);$('rotation-copy-status').textContent='履歴をコピーしました．メモ帳にペーストしよう！';$('rotation-copy-fallback').classList.add('hidden');}catch(e){const box=$('rotation-copy-fallback');box.value=text;box.classList.remove('hidden');box.focus();box.select();$('rotation-copy-status').textContent='下の欄をすべて選んでコピーしてください．テキスト保存も使えます．';}}
+ function download(){log('history-save-requested');save();const url=URL.createObjectURL(new Blob(['\ufeff',history()],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='線形代数学Ia_第2回_アプリ3_v2_履歴.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('rotation-copy-status').textContent='テキストの保存を開始しました．保存先を確認してください．';}
+ function reset(){if(!confirm('この改訂版アプリ3の記録と進み具合を初期化します．旧版や他のアプリの記録は変わりません．初期化しますか？'))return;cancel();data=fresh();readFailure=false;render();save();}
+ main.innerHTML='<style>.rotation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.rotation-part{min-width:0;border-top:1px solid var(--line);padding-top:14px}.rotation-equation{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;flex-wrap:wrap}.rotation-equation>.math{display:flex;align-items:center;gap:3px}.rotation-equation .entry{width:88px}.rotation-equation .matrix{gap:5px 8px;padding:5px 8px}.rotation-views{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}.rotation-plot{width:100%;max-width:300px;display:block;margin:12px auto 0}.rotation-plot text{font:13px "Yu Gothic",Meiryo,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.rotation-part .feedback:empty{display:none}.rotation-part .feedback{min-height:0;margin:6px 0}.rotation-part .help-row{gap:8px}.rotation-card{margin-top:18px}.hidden{display:none!important}#rotation-exercise select{font:inherit;max-width:100%;min-height:44px}#plot-guided{max-width:330px;margin:auto}.rotation-card textarea{box-sizing:border-box;width:100%;min-height:160px;margin-top:10px}#rotation-exercise .button-row{display:flex;flex-wrap:wrap;gap:8px}#trigValues{overflow-wrap:anywhere}@media(max-width:480px){.rotation-grid{grid-template-columns:minmax(0,1fr)}.rotation-equation .entry{width:82px}.rotation-equation .matrix{margin:0 2px;gap:5px 6px}}</style><p id="rotation-warning" class="guide hidden" role="alert"></p><section id="rotation-exercise" class="panel"></section><section class="panel rotation-card"><p id="rotation-status"></p><p class="tiny">第2回の4本のアプリの履歴を，メモ帳の末尾に順に貼り付け，1つのテキストファイル（.txt）としてMoodleへ提出しましょう．</p><button id="rotation-copy" class="primary">履歴をコピー</button><p id="rotation-copy-status" role="status"></p><textarea id="rotation-copy-fallback" class="hidden" readonly aria-label="手動コピー用の履歴"></textarea><details><summary>練習記録を確認・保存する</summary><p id="rotation-record"></p><div class="button-row"><button id="rotation-download" class="secondary">履歴をテキスト保存</button><button id="rotation-reset" class="secondary">練習を最初から</button></div></details></section>';
+ $('app-goal').textContent='回転の向きと角度を確かめ，回転を表す行列と点の行き先を求めよう．';$('rotation-copy').addEventListener('click',copy);$('rotation-download').addEventListener('click',download);$('rotation-reset').addEventListener('click',reset);
+ if(!data.events.length)log('session-start',{version,app:3});window.Lesson2RotationApp={KEY:key,VERSION:version,GOOD_MS:GOOD,getState:()=>clone(data),getProblem:()=>clone(task()),getCoverage:()=>clone(coverage()),exportHistory:history};render();save();window.addEventListener('pagehide',save);
+}
+
+persist();render();
+setInterval(updateSubmission,1000);
+window.addEventListener('pagehide',()=>{persist();});
+})();
+
+
+
+</script>
+</body>
+</html>
+
+
+
