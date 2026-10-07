@@ -17,7 +17,8 @@
 
 .nvec{font-family:Cambria,"Times New Roman",serif;font-weight:700;font-style:italic}.gvec{position:relative;display:inline-block;font-style:italic;padding-top:.18em}.gvec:before{content:"→";position:absolute;top:-.55em;left:0;width:100%;text-align:center;font-size:.8em}.basis-symbol{white-space:nowrap}.basis-symbol sub{font-size:.7em;vertical-align:sub}.notation-note{font-size:.85rem;margin:12px 0;color:#425c69}.notation-note p{max-width:850px}.component-introduction{margin:18px 0;padding:14px;border:1px solid #c6d8dc;border-radius:8px}.component-introduction summary{font-weight:700;color:#163344}.component-plot{display:block;width:100%;max-width:340px;margin:10px auto}.component-plot text{font:14px Cambria,serif}
 
-.accepted-input{display:none!important}.confirmed-value{display:inline-block;min-width:3.5ch;max-width:100%;padding:6px 8px;border:1px solid #a5cebc;border-radius:5px;background:#f0faf5;color:var(--ink);text-align:center;overflow-wrap:anywhere;line-height:1.5}.coverage-details{margin:0 0 14px;font-size:.82rem;color:var(--muted)}.coverage-details summary{cursor:pointer}.coverage-details p{margin:7px 0}.label-leader{pointer-events:none}.diagram [data-point-label]{stroke:none;paint-order:normal}
+.accepted-input{display:none!important}.confirmed-value{display:inline-block;min-width:3.5ch;max-width:100%;padding:6px 8px;border:1px solid #a5cebc;border-radius:5px;background:#f0faf5;color:var(--ink);text-align:center;overflow-wrap:anywhere;line-height:1.5}.coverage-details{margin:0 0 14px;font-size:.82rem;color:var(--muted)}.coverage-details summary{cursor:pointer}.coverage-details p{margin:7px 0}.label-leader{pointer-events:none}[data-point-label]{stroke:none!important;paint-order:normal!important}
+.point-coordinates{text-align:center;overflow-wrap:anywhere;font-size:1rem;margin:5px 0}
 </style>
 </head>
 <body>
@@ -328,6 +329,26 @@ function currentTaskLabel(index,optional,complete,drafts=[]){
  return(optional?'追加練習 ':'類題 ')+(index+1)+' · '+status;
 }
 
+function pointLabelsSvg(labels,segments=[],circleRadius=0,fontSize=13){
+ const boxes=[],origin={x:150,y:150},overlap=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+ const lineBoxes=segments.flatMap(([a,b])=>Array.from({length:25},(_,i)=>({x:a[0]+(b[0]-a[0])*i/24-2,y:a[1]+(b[1]-a[1])*i/24-2,w:4,h:4})));
+ if(circleRadius)for(let i=0;i<64;i++){const a=i*Math.PI/32;lineBoxes.push({x:150+circleRadius*Math.cos(a)-2,y:150-circleRadius*Math.sin(a)-2,w:4,h:4});}
+ const fixed=[{x:18,y:146,w:264,h:8},{x:146,y:18,w:8,h:264},{x:124,y:157,w:16,h:16},{x:277,y:130,w:17,h:17},{x:154,y:5,w:17,h:18},...lineBoxes];
+ const distance=(pt,b)=>Math.hypot(Math.max(b.x-pt.x,0,pt.x-b.x-b.w),Math.max(b.y-pt.y,0,pt.y-b.y-b.h));
+ return labels.map((pt,index)=>{
+  const width=[...pt.text].reduce((n,c)=>n+(c.charCodeAt(0)>255?fontSize:fontSize*.56),0)+3;
+  const obstacles=[...fixed,...boxes,...labels.filter((_,i)=>i!==index).map(p=>({x:p.x-7,y:p.y-7,w:14,h:14}))];
+  const candidates=[[9,-11],[-9,-11],[9,23],[-9,23],[20,-25],[-20,-25],[20,35],[-20,35],[34,-11],[-34,-11],[34,23],[-34,23]].map(([dx,dy])=>{
+   const x=pt.x+dx,y=pt.y+dy,anchor=dx<0?'end':'start',box={x:dx<0?x-width:x,y:y-fontSize,w:width,h:fontSize+4};
+   const outside=Math.max(0,8-box.x)+Math.max(0,box.x+box.w-292)+Math.max(0,8-box.y)+Math.max(0,box.y+box.h-292),own=distance(pt,box);
+   const ambiguous=labels.filter((p,i)=>i!==index&&Math.hypot(p.x-pt.x,p.y-pt.y)>2).reduce((v,p)=>v+Math.max(0,own-distance(p,box)+3),0);
+   return{x,y,anchor,box,dx,dy,score:outside*10000+obstacles.reduce((n,b)=>n+overlap(box,b),0)*100+ambiguous*10000+(dx*dx+dy*dy)/50};
+  });
+  candidates.sort((a,b)=>a.score-b.score);const pos=candidates[0];boxes.push(pos.box);
+  const edgeX=Math.min(pos.box.x+pos.box.w,Math.max(pos.box.x,pt.x)),edgeY=Math.min(pos.box.y+pos.box.h,Math.max(pos.box.y,pt.y)),d=Math.hypot(edgeX-pt.x,edgeY-pt.y),leader=d>14?'<polyline class="label-leader" points="'+(pt.x+(edgeX-pt.x)*5/d)+','+(pt.y+(edgeY-pt.y)*5/d)+' '+edgeX+','+edgeY+'" fill="none" stroke="'+pt.color+'" stroke-width=".8" opacity=".75"/>':'';
+  return leader+'<text class="point-label" data-point-label="'+esc(pt.text)+'" data-point-x="'+pt.x+'" data-point-y="'+pt.y+'" data-label-box="'+[pos.box.x,pos.box.y,pos.box.w,pos.box.h].join(',')+'" x="'+pos.x+'" y="'+pos.y+'" text-anchor="'+pos.anchor+'" fill="'+pt.color+'">'+esc(pt.text)+'</text>';
+ }).join('');
+}
 if(APP===1){runNormalApp();return;}
 if(APP===2){runQuarterApp();return;}
 if(APP===3){runRotationApp();return;}
@@ -382,13 +403,13 @@ function svgGraph({points=[],vectors=[],paths=[],circle=false,arc=null,bounds=nu
   const offsets=[[10,-12],[-10,-12],[10,24],[-10,24],[22,-26],[-22,-26],[22,36],[-22,36],[34,-12],[-34,-12],[34,24],[-34,24]];
   const options=offsets.map(([dx,dy])=>{const x=px+dx,y=py+dy,anchor=dx<0?'end':'start',box={x:dx<0?x-width:x,y:y-13,w:width,h:17};
    const outside=Math.max(0,18-box.x)+Math.max(0,box.x+box.w-(W-18))+Math.max(0,18-box.y)+Math.max(0,box.y+box.h-(H-18));
-   return{x,y,anchor,box,leader:Math.abs(dx)>15||dy>20,score:outside*10000+obstacles.reduce((n,o)=>n+overlap(box,o),0)*100+(dx*dx+dy*dy)/50};});
+   const distance=(x,y)=>Math.hypot(Math.max(box.x-x,0,x-box.x-box.w),Math.max(box.y-y,0,y-box.y-box.h)),own=distance(px,py),ambiguity=points.filter(p=>p!==pt&&Math.hypot(X(p.p[0])-px,Y(p.p[1])-py)>2).reduce((n,p)=>n+Math.max(0,own-distance(X(p.p[0]),Y(p.p[1]))+3),0);return{x,y,anchor,box,leader:Math.abs(dx)>15||dy>20,score:outside*10000+obstacles.reduce((n,o)=>n+overlap(box,o),0)*100+ambiguity*10000+(dx*dx+dy*dy)/50};});
   options.sort((a,b)=>a.score-b.score);const chosen=options[0];labelBoxes.push(chosen.box);return chosen;
  }
  for(const pt of points){const pos=labelPosition(pt),px=X(pt.p[0]),py=Y(pt.p[1]);
   if(pt.label&&pos.leader)marks+='<polyline class="label-leader" points="'+px+','+py+' '+(pos.x+(pos.anchor==='end'?-2:2))+','+(pos.y-5)+'" fill="none" stroke="'+pt.color+'" stroke-width=".9" opacity=".7"/>';
   marks+='<circle cx="'+px+'" cy="'+py+'" r="'+(pt.r||4.8)+'" fill="'+pt.color+'" stroke="white" stroke-width="1.7"/>';
-  if(pt.label)marks+='<text data-point-label="'+esc(pt.label)+'"'+(pos.box?' data-label-box="'+[pos.box.x,pos.box.y,pos.box.w,pos.box.h].join(',')+'"':'')+' x="'+pos.x+'" y="'+pos.y+'" text-anchor="'+pos.anchor+'" fill="'+pt.color+'" font-size="13">'+esc(pt.label)+'</text>';
+  if(pt.label)marks+='<text data-point-label="'+esc(pt.label)+'" data-point-x="'+px+'" data-point-y="'+py+'"'+(pos.box?' data-label-box="'+[pos.box.x,pos.box.y,pos.box.w,pos.box.h].join(',')+'"':'')+' x="'+pos.x+'" y="'+pos.y+'" text-anchor="'+pos.anchor+'" fill="'+pt.color+'" font-size="13">'+esc(pt.label)+'</text>';
  }
 
  let svg='<svg class="diagram" viewBox="0 0 400 340" data-bound="'+bound+'" data-scale="'+scale+'" data-grid-step="'+step+'" role="img" aria-label="'+esc(title)+'"><defs><clipPath id="plot-clip"><rect x="15" y="15" width="370" height="310"/></clipPath>'+[['teal','#126e71'],['ochre','#a36320'],['navy','#17354a']].map(([n,c])=>'<marker id="arrow-'+n+'" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3.5 L0,7 Z" fill="'+c+'"/></marker>').join('')+'</defs>'+grid+'<line x1="17" y1="'+oy+'" x2="386" y2="'+oy+'" stroke="#879ca5" marker-end="url(#arrow-navy)"/><line x1="'+ox+'" y1="323" x2="'+ox+'" y2="12" stroke="#879ca5" marker-end="url(#arrow-navy)"/><text x="385" y="'+(oy-8)+'" font-size="13" fill="#536970">x</text><text x="'+(ox+9)+'" y="17" font-size="13" fill="#536970">y</text><text x="'+(ox-12)+'" y="'+(oy+15)+'" font-size="11" fill="#536970">O</text><g data-plot-content'+(clip?' clip-path="url(#plot-clip)"':'')+'>'+marks+'</g><circle class="plot-origin" cx="'+ox+'" cy="'+oy+'" r="2.5" fill="#000"/></svg>';
@@ -717,8 +738,16 @@ function runQuarterApp(){
   for(let n=-Math.floor(range/step)*step;n<=range;n+=step){const a=150+n*unit;svg+='<line x1="'+a+'" y1="20" x2="'+a+'" y2="280" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/><line x1="20" y1="'+a+'" x2="280" y2="'+a+'" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/>';if(n&&(basis?Number.isInteger(n):Math.abs(Math.abs(n)-Math.floor(range/step)*step)<1e-8))svg+='<text x="'+a+'" y="165" text-anchor="middle">'+C.exact(n)+'</text><text x="137" y="'+(150-n*unit+4)+'" text-anchor="end">'+C.exact(n)+'</text>';}
   if(basis)svg+='<circle cx="150" cy="150" r="'+unit+'" fill="none" stroke="#cedbdd"/>';
   svg+='<text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
-  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):k+txtPoint(p),labelSide=p[0]<0&&z[0]-9-label.length*7>=12?-1:z[0]+9+label.length*7>288?-1:1;svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/><text x="'+(z[0]+labelSide*9)+'" y="'+(z[1]>150?z[1]+19:z[1]-10)+'" text-anchor="'+(labelSide<0?'end':'start')+'" fill="'+color+'">'+esc(label)+'</text>';if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':k+'′'+txtPoint(image);svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+(basis?color:'#a36320')+'" stroke-width="2.5"/><circle class="image-point" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+(basis?color:'#a36320')+'"/><text x="'+(end[0]+(basis?(end[0]<=150?-12:12):(end[0]>210?-9:9)))+'" y="'+(end[1]+(basis||image[1]>=0?-10:19))+'" text-anchor="'+(basis?(end[0]<=150?'end':'start'):(end[0]>210?'end':'start'))+'" fill="'+(basis?color:'#a36320')+'">'+esc(out)+'</text>';}});
-  return '<svg class="quarter-plot" viewBox="0 0 300 300" role="img" aria-label="'+names[k]+'を確かめる図">'+svg+'<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/></svg><p class="tiny">1目盛りは'+C.exact(step)+'です．'+(show?'破線は元の点，実線は90度回転後の行き先です．':'答えを確認すると，90度回転後の行き先を表示します．')+'</p>';
+  const labels=[],segments=[];
+  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):k;
+   segments.push([[150,150],z]);labels.push({x:z[0],y:z[1],text:label,color});
+   svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/>';
+   if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':k+'′',imageColor=basis?color:'#a36320';segments.push([[150,150],end]);labels.push({x:end[0],y:end[1],text:out,color:imageColor});
+    svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+imageColor+'" stroke-width="2.5"/><circle class="'+'image-point'+'" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+imageColor+'"/>';
+   }
+  });
+  svg+=pointLabelsSvg(labels,segments,basis?unit:0);
+  return '<svg class="quarter-plot" viewBox="0 0 300 300" role="img" aria-label="'+names[k]+'を確かめる図">'+svg+'<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/></svg>'+(!basis?'<p class="math point-coordinates">'+esc(k+' = '+txtPoint(sources[0]))+(show?'　'+esc(k+'′ = '+txtPoint(C.apply(q.A,sources[0]))):'')+'</p>':'')+'<p class="tiny">1目盛りは'+C.exact(step)+'です．'+(show?'破線は元の点，実線は90度回転後の行き先です．':'答えを確認すると，90度回転後の行き先を表示します．')+'</p>';
  }
  function updateMath(){if(data.phase==='guided'){const k=parts[data.guided.stage];if($('plot-guided'))$('plot-guided').innerHTML=graph(k,true);return;}const p=current(),q=task();for(const k of p.scope){if($('plot-'+k))$('plot-'+k).innerHTML=graph(k,known(p,k));if($('lhs-'+k))$('lhs-'+k).innerHTML=(known(p,'matrix')?matrix(q.A,2):'R')+matrix(q.points[k==='P'?0:1].p)+' =';if($('solution-'+k))$('solution-'+k).disabled=!ready(p,k);if($('hint-'+k))$('hint-'+k).disabled=!ready(p,k);}}
  function question(p){if(!p.whole)return '今回は'+p.scope.map(k=>names[k]).join('，')+'だけを求めよう．';return p.scope.includes('matrix')?'原点を中心に反時計回りに90度回転する行列Rを作り，点P・Qの行き先を求めよう．':'原点を中心に反時計回りに90度回転する行列Rを使い，点P・Qの行き先を求めよう．';}
@@ -816,9 +845,9 @@ function runNormalApp(){
   const p=image?q.expected:q.point.p,{bound,step,unit}=graphScale(q),xy=a=>[150+a[0]*unit,150-a[1]*unit];let out='';
   for(let n=-bound;n<=bound;n+=step){const x=150+n*unit,y=150-n*unit;if(n)out+='<line x1="'+x+'" y1="38" x2="'+x+'" y2="262" stroke="#ccd5d8"/><line x1="38" y1="'+y+'" x2="262" y2="'+y+'" stroke="#ccd5d8"/>';if(Math.abs(n)===bound)out+='<text class="plot-tick" x="'+x+'" y="170" text-anchor="middle">'+n+'</text><text class="plot-tick" x="137" y="'+(y+4)+'" text-anchor="end">'+n+'</text>';}
   out+='<path d="M18 150H282M150 282V18" fill="none" stroke="#6d8189" stroke-width="1.2"/>';
-  if(!image||show){const at=xy(p),color=image?'#a36320':'#126e71',label=q.point.name+(image?'′':'')+txtPoint(p),labelWidth=label.length*7.5;let side=p[0]<0?-1:1;if(side>0&&at[0]+7+labelWidth>290)side=-1;if(side<0&&at[0]-7-labelWidth<10)side=1;const labelY=p[1]<0&&at[1]-150<45?Math.max(190,at[1]+18):at[1]-7;out+='<line x1="150" y1="150" x2="'+at[0]+'" y2="'+at[1]+'" stroke="'+color+'" stroke-width="2"/><circle class="'+(image?'image-point':'source-point')+'" cx="'+at[0]+'" cy="'+at[1]+'" r="5" fill="'+color+'"/><text class="point-label" x="'+(at[0]+side*7)+'" y="'+labelY+'" text-anchor="'+(side>0?'start':'end')+'" fill="'+color+'">'+esc(label)+'</text>';}
+  if(!image||show){const at=xy(p),color=image?'#a36320':'#126e71',label=q.point.name+(image?'′':'');out+='<line x1="150" y1="150" x2="'+at[0]+'" y2="'+at[1]+'" stroke="'+color+'" stroke-width="2"/><circle class="'+(image?'image-point':'source-point')+'" cx="'+at[0]+'" cy="'+at[1]+'" r="5" fill="'+color+'"/>'+pointLabelsSvg([{x:at[0],y:at[1],text:label,color}],[[[150,150],at]],0,14);}
   out+='<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/><text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
-  return '<svg viewBox="0 0 300 300" class="normal-plot" role="img" aria-label="'+esc(image?'行列Aによる点'+q.point.name+'の行き先':'元の点'+q.point.name)+'">'+out+'</svg>';
+  return '<svg viewBox="0 0 300 300" class="normal-plot" role="img" aria-label="'+esc(image?'行列Aによる点'+q.point.name+'の行き先':'元の点'+q.point.name)+'">'+out+'</svg>'+(!image||show?'<p class="math point-coordinates">'+esc(q.point.name+(image?'′':'')+' = '+txtPoint(p))+'</p>':'');
  }
  function updateMath(){const q=task(),p=current(),show=guided()||p.solved||p.explanationOpen;if($('plot-source'))$('plot-source').innerHTML=graph(q,show,false);if($('plot-image'))$('plot-image').innerHTML=graph(q,show,true);if($('plot-note'))$('plot-note').textContent='1目盛りは'+graphScale(q).step+'です．'+(show?'元の点と行き先を，同じ目盛り・縮尺で比べます．':'行き先は，答えを確認した後に表示します．');if($('normal-calculation'))$('normal-calculation').innerHTML=!guided()&&p.solved?'<details><summary>2本の列から行き先を確かめる</summary>'+expanded(q)+'</details>':'';const details=$('normal-calculation')?.querySelector('details');if(details)details.addEventListener('toggle',()=>{if(details.open){pause();save();}});}
  function render(){
@@ -914,7 +943,15 @@ function runRotationApp(){
   for(let n=-Math.floor(range/step)*step;n<=range;n+=step){const x=150+n*unit,y=150-n*unit;svg+='<line x1="'+x+'" y1="18" x2="'+x+'" y2="282" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/><line x1="18" y1="'+y+'" x2="282" y2="'+y+'" stroke="'+(n?'#ccd5d8':'#8c9da4')+'"/>';if(n&&(basis?Number.isInteger(n):Math.abs(Math.abs(n)-Math.floor(range/step)*step)<1e-8))svg+='<text x="'+x+'" y="165" text-anchor="middle">'+n+'</text><text x="137" y="'+(y+4)+'" text-anchor="end">'+n+'</text>';}
   if(basis)svg+='<circle cx="150" cy="150" r="'+unit+'" fill="none" stroke="#cedbdd"/>';
   svg+='<text x="281" y="143">x</text><text x="158" y="18">y</text><text x="137" y="170" text-anchor="end">O</text>';
-  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):'P'+txtPoint(p),labelSide=p[0]<0&&z[0]-8-label.length*7>=12?-1:z[0]+8+label.length*7>288?-1:1;svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/><text x="'+(z[0]+labelSide*8)+'" y="'+(z[1]>150?z[1]+19:z[1]-10)+'" text-anchor="'+(labelSide<0?'end':'start')+'" fill="'+color+'">'+esc(label)+'</text>';if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':'P′';svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+(basis?color:'#a36320')+'" stroke-width="2.5"/><circle class="'+(basis?'matrix-image-point':'image-point')+'" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+(basis?color:'#a36320')+'"/><text x="'+(end[0]+(basis?(end[0]<=150?-12:12):(end[0]>=150?10:-10)))+'" y="'+(end[1]+(basis||image[1]>=0?-10:19))+'" text-anchor="'+(basis?(end[0]<=150?'end':'start'):(end[0]>=150?'start':'end'))+'" fill="'+(basis?color:'#a36320')+'">'+esc(out)+'</text>';}});
+  const labels=[],segments=[];
+  sources.forEach((p,i)=>{const z=pos(p),color=basis?(i?'#a36320':'#126e71'):'#126e71',label=basis?txtPoint(p):'P';
+   segments.push([[150,150],z]);labels.push({x:z[0],y:z[1],text:label,color});
+   svg+='<line x1="150" y1="150" x2="'+z[0]+'" y2="'+z[1]+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="4 3"/><circle class="source-point" cx="'+z[0]+'" cy="'+z[1]+'" r="4" fill="'+color+'"/>';
+   if(show){const image=C.apply(q.A,p),end=pos(image),out=basis?'第'+(i+1)+'列':'P′',imageColor=basis?color:'#a36320';segments.push([[150,150],end]);labels.push({x:end[0],y:end[1],text:out,color:imageColor});
+    svg+='<line x1="150" y1="150" x2="'+end[0]+'" y2="'+end[1]+'" stroke="'+imageColor+'" stroke-width="2.5"/><circle class="'+(basis?'matrix-image-point':'image-point')+'" cx="'+end[0]+'" cy="'+end[1]+'" r="5" fill="'+imageColor+'"/>';
+   }
+  });
+  svg+=pointLabelsSvg(labels,segments,basis?unit:0);
   return '<svg class="rotation-plot" viewBox="0 0 300 300" role="img" aria-label="'+names[k]+'を確かめる図">'+svg+'<circle class="plot-origin" cx="150" cy="150" r="2.5" fill="#000"/></svg>'+(show&&!basis?'<p class="math rotation-point-result">P′ = ('+esc(C.rotationPointText(q.angle,q.point.p).join(', '))+')</p>':'')+'<p class="tiny">1目盛りは'+C.exact(step)+'です．'+(show?'破線は元の点，実線は回転後の行き先です．':'答えを確認すると，回転後の行き先を表示します．')+'</p>';
  }
  function updateMath(){if(data.phase==='guided'){if($('plot-guided'))$('plot-guided').innerHTML=graph(parts[data.guided.stage],true);return;}const p=current(),q=task();for(const k of p.scope){if($('plot-'+k))$('plot-'+k).innerHTML=graph(k,known(p,k));if($('lhs-'+k))$('lhs-'+k).innerHTML=(known(p,'matrix')?matrix(q.A,2):'R')+matrix(q.point.p)+' =';if($('solution-'+k))$('solution-'+k).disabled=!ready(p,k);if($('hint-'+k))$('hint-'+k).disabled=!ready(p,k);}}
