@@ -1,0 +1,185 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第5回 面積・向き・逆行列</title><style>
+:root{font-family:system-ui,'Noto Sans',sans-serif;color:#183344;background:#f4f7f8;line-height:1.65}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:auto;padding:20px}h1{font-size:1.6rem;line-height:1.4}h2{font-size:1.25rem}h3{font-size:1.1rem}section,.card{background:white;border:1px solid #d3dfe3;border-radius:12px;padding:20px;margin:16px 0}button,select,input,textarea{font:inherit}button{background:#176c77;color:white;border:0;border-radius:7px;padding:10px 16px;cursor:pointer;min-height:44px}button.secondary{background:#e5eef0;color:#183344}button:disabled{cursor:default;opacity:.6}button:focus-visible,input:focus,select:focus{outline:3px solid #eab347;outline-offset:2px}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.small{font-size:.88rem;color:#506875}.givens{background:#edf5f6;border-left:4px solid #137281;padding:12px}.field{padding:12px 0;border-top:1px solid #e5ecee}.field label{display:block;font-weight:600}.field input{width:100%;max-width:260px;padding:8px;border:1px solid #9faeb4;border-radius:6px}.field select{width:100%;max-width:100%;padding:9px;border:1px solid #9faeb4;border-radius:6px;white-space:normal}.feedback{display:block;font-size:.92rem;margin:5px 0}.correct{color:#126145}.wrong{color:#a53524}.notice{padding:10px;border-radius:7px;background:#fff2cd}.hidden{display:none!important}.plot{width:100%;max-width:420px;aspect-ratio:1;display:block;margin:auto}.plots{display:flex;flex-wrap:wrap;gap:12px}.plots>div{flex:1;min-width:250px}svg text{font-family:system-ui;font-size:13px;paint-order:stroke;stroke:white;stroke-width:3px;stroke-linejoin:round}details{margin:12px 0}summary{cursor:pointer;font-weight:600}textarea{width:100%;min-height:180px}.progress{font-size:.95rem}.badge{display:inline-block;padding:3px 7px;border-radius:4px;background:#edf5f6}.math{font-family:serif;font-size:1.05rem}.stage{border-bottom:2px solid #176c77;padding-bottom:7px}.answer{overflow-wrap:anywhere}.legend{font-size:.9rem;margin:5px 0}.explore{background:#f1f7f7;padding:12px;border-radius:8px}.range{width:100%}a{color:#126576}@media(max-width:450px){main{padding:10px}section,.card{padding:14px}h1{font-size:1.35rem}.plots>div{min-width:100%}}@media print{button,.buttons,#submission{display:none}}
+</style><main><header><p class="small">線形代数学 I-a 第5回・内積と行列式　新カリキュラム版</p><h1>3. 面積・向き・逆行列</h1><p id="goal"></p><div id="storageNotice" role="status"></div><p class="small">この版の記録は、以前の第5回アプリの記録とは別に保存します。</p></header><nav class="buttons"><button id="example" class="secondary">講義の例題</button><button id="practice">別の数値で練習する</button></nav><p id="coverage" class="progress"></p><section id="exercise"></section><section id="submission"><h2>学習記録</h2><p>途中でもコピー・保存できます。3本の記録を同じテキストにまとめて提出できます。ブラウザーへの保存と提出は別です。</p><div class="buttons"><button id="copy">履歴をコピー</button><button id="showRecord" class="secondary">記録を表示</button><button id="download" class="secondary">テキスト保存</button></div><p id="copyStatus" role="status"></p><p id="recordStatus" class="small"></p><textarea id="recordText" class="hidden" readonly aria-label="表示した学習記録"></textarea><textarea id="copyFallback" class="hidden" readonly aria-label="手動コピー用の学習記録"></textarea><details><summary>この版の記録を初期化する</summary><p>このアプリだけの記録を消します。以前の版・他のアプリの記録は消しません。必要なら先に保存してください。</p><button id="reset" class="secondary">初期化の確認へ</button><div id="resetConfirm" class="hidden"><p>この版の記録を本当に消しますか？</p><button id="resetYes">この版の記録を消す</button> <button id="resetNo" class="secondary">やめる</button></div></details></section></main><script>const MODE=3;
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.InnerLesson=api;})(globalThis,function(){
+'use strict';
+const VERSION='2026-10-28.innerproduct.1';
+const titles=['内積と正射影','90度回転から行列式へ','面積・向き・逆行列'];
+function parse(raw){
+ try{
+ if(typeof raw!=='string'||raw.length>180)throw Error('180文字以内の数式を入力してください。');
+ if(/[⁰¹²³⁴⁵⁶⁷⁸⁹₀₁₂₃₄₅₆₇₈₉]/u.test(raw))throw Error('上付き数字は使わず、2*2 のように書いてください。');
+ let s=raw.normalize('NFKC').replace(/[−–]/g,'-').replace(/×/g,'*').replace(/÷/g,'/');
+ if(/[\d.]\s+[\d.]/.test(s))throw Error('数の間の空白は使えません。帯分数は 1+1/2 と書いてください。');
+ s=s.replace(/\s/g,'');if(!s)return{status:'incomplete',message:'未入力です。'};
+ let p=0; const fail=()=>{const e=Error(p>=s.length?'式の続きを入力してください。':'数・四則演算・括弧・sqrt(数) を使ってください。');e.incomplete=p>=s.length;throw e;};
+ function atom(depth){if(depth>20)throw Error('括弧を減らしてください。');if(s[p]==='+'){p++;return atom(depth+1);}if(s[p]==='-'){p++;return -atom(depth+1);}if(s.slice(p,p+5)==='sqrt('){p+=5;const x=sum(depth+1);if(s[p++]!==')')fail();if(x<0)throw Error('負の数の平方根はこの問題では使いません。');return Math.sqrt(x);}if(s[p]==='('){p++;const x=sum(depth+1);if(s[p++]!==')')fail();return x;}const m=s.slice(p).match(/^(?:\d+(?:\.\d+)?|\.\d+)/);if(!m)fail();p+=m[0].length;return Number(m[0]);}
+ function product(d){let x=atom(d);while(s[p]==='*'||s[p]==='/'){const op=s[p++],y=atom(d);if(op==='/'&&y===0)throw Error('0では割れません。');x=op==='*'?x*y:x/y;}return x;}
+ function sum(d){let x=product(d);while(s[p]==='+'||s[p]==='-'){const op=s[p++],y=product(d);x=op==='+'?x+y:x-y;}return x;}
+ const value=sum(0);if(p!==s.length)fail();if(!Number.isFinite(value)||Math.abs(value)>1e12)throw Error('数が大きすぎます。');return{status:'valid',value};
+ }catch(e){return{status:e.incomplete?'incomplete':'invalid',message:e.message};}
+}
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1], det=(u,v)=>u[0]*v[1]-u[1]*v[0],rot=u=>[-u[1],u[0]],norm=u=>Math.hypot(...u);
+const projection=(a,b)=>a.map(x=>x*dot(a,b)/dot(a,a));
+const f=(id,label,answer,hint,options)=>({id,label,answer,hint,options});
+const num=(x)=>Math.abs(x)<1e-10?'0':Number.isInteger(x)?String(x):String(+x.toFixed(5));
+const coord=u=>'('+u.map(num).join(', ')+')';
+const signOptions=[['positive','正：a と同じ向き'],['zero','0：射影は零ベクトル'],['negative','負：a と逆の向き']];
+function inner(a,b,key,example=false){const d=dot(a,b),p=projection(a,b),sign=d>0?'positive':d<0?'negative':'zero';return{key,example,kind:sign,a,b,title:'b を a の直線へ正射影すると、どこへ移る？',givens:'a = '+coord(a)+'、b = '+coord(b)+'（各矢印の始点は原点）',stages:[{title:'内積と正射影を求める',intro:'内積は実数、正射影はベクトルです。b の先端から a の直線に垂線を下ろした足を考えます。',fields:[f('dot','内積 a・b',d,'対応する成分どうしを掛けて足します。a₁b₁ + a₂b₂。'),f('signed','a の向きの符号付きの長さ s',d/norm(a),'s = (a・b)/|a|。正射影の長さに向きの符号を付けた実数です。'),f('px','正射影 p の第1成分',p[0],'p = a × (a・b)/(a・a)。a・b だけでは射影の成分にはなりません。'),f('py','正射影 p の第2成分',p[1],'第1成分と同じ倍率 (a・b)/(a・a) を、a の第2成分にも掛けます。'),f('sign','正射影の向き（a を基準に）',sign,'a・a は正なので、倍率の符号は内積の符号で決まります。',signOptions)],explain:'p = a × (a・b)/(a・a) = '+coord(p)+'。内積の符号が、正射影が a と同じ向きか逆向きかを表します。'}, {title:'垂線になっているか検算する',intro:'正射影 p を引いた残り b−p が、a に垂直かを内積で確かめます。',fields:[f('check','a・(b−p)',0,'分配法則で a・b − a・p。射影の計算が正しければ、この値は0になります。'),f('why','この検算から言えること','perpendicular','内積0は直交を表します。射影そのものが a と垂直になるのではありません。',[['perpendicular','残り b−p は a に垂直（零の場合も内積は0）'],['projection','正射影 p が a に垂直'],['same','b と a は必ず同じ向き']])],explain:'a・(b−p)=0。a の直線上の p と、a に垂直な残りに b を分けました。'}]};}
+function bridge(u,v,key,example=false){const r=rot(u),d=det(u,v),h=d/norm(u);return{key,example,kind:d<0?'negative':'positive',a:u,b:v,title:'内積から平行四辺形の面積を求めよう',givens:'第1列 u = '+coord(u)+'、第2列 v = '+coord(v)+'。A はこの順に列を並べた行列です。',stages:[{title:'底辺 u に垂直な方向を作る',intro:'u を反時計回りに90度回したベクトルを u⊥ と書きます。u⊥ 方向への v の符号付きの長さが高さ h です。',fields:[f('rx','u⊥ の第1成分',r[0],'(a,b) を反時計回りに90度回すと (−b,a)。時計回りとは符号が逆です。'),f('ry','u⊥ の第2成分',r[1],'(a,b) → (−b,a)。第2成分は a です。'),f('dot','u⊥・v',d,'回したベクトル u⊥ と v の対応する成分を掛けて足します。'),f('height','符号付きの高さ h',h,'h = (u⊥・v)/|u|。内積を u⊥ の長さ（=|u|）で割ります。sqrt(5) のように入力できます。')],explain:'u⊥・v = |u|h。高さの符号は、v が u のどちら側にあるかを区別します。'}, {title:'符号付きの面積と面積を区別する',intro:'A の第1列を (a,b)、第2列を (c,d) とすると、u⊥・v = −bc+ad。これを det A と書きます。',fields:[f('det','行列式 det A',d,'列の並びは A=[[a,c],[b,d]]。det A=ad−bc=u⊥・v。'),f('area','平行四辺形の面積',Math.abs(d),'面積は負になりません。底辺の長さ×高さの絶対値=|det A|。'),f('reason','u ではなく u⊥ との内積を使う理由','height','底辺に沿う成分では、平行四辺形の高さは求まりません。',[['height','底辺に垂直な方向への符号付きの長さを取り出すため'],['length','v の長さそのものを取り出すため'],['same','u・v と u⊥・v はいつでも同じだから']])],explain:'det A='+num(d)+'、面積='+num(Math.abs(d))+'。行列式は符号を持ち、面積はその絶対値です。'}]};}
+const orientationOptions=[['same','保つ'],['reverse','逆になる'],['collapse','線分または点になり、面としての向きは失われる']];
+function transfer(A,key,example=false){const u=[A[0][0],A[1][0]],v=[A[0][1],A[1][1]],d=det(u,v),zero=Math.abs(d)<1e-10,kernel=key==='example-zero'?[4,8]:[v[0],-u[0]];return{key,example,kind:zero?'zero':d<0?'negative':'positive',a:u,b:v,A,title:'行列式から、図形の変化と戻せるかを判断しよう',givens:'A の第1列 u = '+coord(u)+'、第2列 v = '+coord(v)+'。元の図形の面積は10。周をたどる頂点の順序は変えません。',stages:[{title:'面積・向き・逆行列をまとめて予想する',intro:'「向き」は図形の顔の方向ではなく、対応する頂点を周に沿ってたどる向きです。',fields:[f('det','行列式 det A',d,'第1列(a,b)、第2列(c,d)の順で ad−bc を計算します。'),f('area','像の面積',10*Math.abs(d),'元の面積10に |det A| を掛けます。小さくなる場合もあります。'),f('orientation','頂点をたどる向き',zero?'collapse':d>0?'same':'reverse','det A が正なら保つ、負なら逆、0なら面がつぶれます。',orientationOptions),f('inverse','逆行列は存在するか',zero?'no':'yes','det A≠0なら一意に戻せます。0なら異なる入力が同じ像になるため、逆行列はありません。',[['yes','存在する'],['no','存在しない']])],explain:'面積は |det A| 倍。det A の符号で向きを判定し、0かどうかで逆行列の有無を判定します。'},...(zero?[{title:'面積0は「すべて原点」なのか',intro:'非零の点 '+coord(kernel)+' の像を確かめます。さらに点(1,0)の像と比較します。',fields:[f('kx','A'+coord(kernel)+' の第1成分',0,'行列の第1行と与えられた点の成分を掛けて足します。'),f('ky','A'+coord(kernel)+' の第2成分',0,'行列の第2行と与えられた点の成分を掛けて足します。'),f('x','A(1,0) の第1成分',u[0],'(1,0) の像はAの第1列です。'),f('y','A(1,0) の第2成分',u[1],'第1列の下の成分を読みます。'),f('why','逆行列がない理由','many','像の面積0だけから、すべて原点へ移るとは限りません。',[['many','異なる入力が同じ像に重なり、一意に戻せない'],['origin','すべての点が必ず原点へ移る']])],explain:'この行列では像は直線上につぶれます。面積0でも、原点以外の像はあります。'}]:[])]};}
+const examples={1:[inner([2,2],[3,0],'example-dot',true)],2:[bridge([2,1],[-1,1],'example-bridge',true)],3:[transfer([[1.3,-.2],[-.1,.9]],'example-positive',true),transfer([[-.5,.8],[.5,.2]],'example-negative',true),transfer([[-2,1],[6,-3]],'example-zero',true)]};
+const banks={1:[inner([1,2],[3,1],'dot-positive'),inner([2,1],[-2,-1],'dot-negative'),inner([1,2],[2,-1],'dot-zero'),inner([2,1],[1,3],'dot-positive-2'),inner([1,2],[-3,1],'dot-negative-2'),inner([2,1],[-1,2],'dot-zero-2')],2:[bridge([3,0],[1,2],'bridge-positive'),bridge([0,2],[3,1],'bridge-negative'),bridge([1,2],[-1,1],'bridge-positive-2'),bridge([2,1],[1,-1],'bridge-negative-2')],3:[transfer([[.5,0],[0,1]],'transfer-positive'),transfer([[1,2],[1,0]],'transfer-negative'),transfer([[1,2],[2,4]],'transfer-zero'),transfer([[1,.5],[0,.5]],'transfer-positive-2'),transfer([[0,1],[2,1]],'transfer-negative-2'),transfer([[2,-1],[4,-2]],'transfer-zero-2')]};
+const required={1:['positive','negative','zero'],2:['positive','negative'],3:['positive','negative','zero']};
+function check(field,raw){if(field.options)return !raw?{status:'incomplete',message:'選択してください。'}:field.options.some(x=>x[0]===raw)?{status:raw===field.answer?'correct':'wrong'}:{status:'invalid',message:'表示された項目から選んでください。'};const p=parse(raw);return p.status!=='valid'?p:{status:Math.abs(p.value-field.answer)<=1e-9*Math.max(1,Math.abs(field.answer))?'correct':'wrong',value:p.value};}
+return{VERSION,titles,examples,banks,required,parse,check,dot,det,rot,norm,projection,inner,bridge,transfer,num,coord};
+});
+
+// Shared persistence and navigation for current practice apps. Embedded in each HTML.
+function learningStorage(key,getState,notify){
+ let baseline=null,conflict=false,pending=false,dbPromise=null;
+ const token=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
+ let generation=token(),revision=0;
+ const conflictText='別のタブで記録が更新または初期化されたため、このタブからの自動保存を止めました。このタブの入力は残っています。必要なら履歴をコピー・保存してから、他のタブを閉じて再読み込みしてください。';
+ function failConflict(){conflict=true;pending=false;notify(false,conflictText);}
+ function commit(){
+  if(conflict)return;
+  try{
+   if(localStorage.getItem(key)!==baseline){failConflict();return;}
+   const state=getState(),same=x=>JSON.stringify(x,(k,v)=>['storageRevision','interfaceRevision','goodUntil','feedback','feedbackType'].includes(k)?undefined:v);
+   if(baseline){try{const previous=JSON.parse(baseline);if((!previous.storageRevision||previous.storageRevision.generation===generation)&&same(state)===same(previous)){notify(true,'');return;}}catch(e){}}
+   const meta={generation,revision:revision+1,writer:token()};
+   const data=JSON.stringify({...state,storageRevision:meta,interfaceRevision:'2026-10-15.1'});
+   localStorage.setItem(key,data);baseline=data;revision=meta.revision;state.storageRevision=meta;state.interfaceRevision='2026-10-15.1';notify(true,'');
+  }catch(e){notify(false,'ブラウザーに保存できません。閉じる前に履歴をコピーまたは保存してください。');}
+ }
+ function indexedLock(action){
+  if(typeof indexedDB==='undefined')return Promise.reject(Error('safe-lock-unavailable'));
+  if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('senkeiIa.learning.save-lock',1);req.onupgradeneeded=()=>req.result.createObjectStore('locks');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);req.onblocked=()=>reject(Error('locked database'));});
+  return dbPromise.then(db=>new Promise((resolve,reject)=>{const tx=db.transaction('locks','readwrite');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);const req=tx.objectStore('locks').get(key);req.onsuccess=action;}));
+ }
+ function pump(){
+  if(conflict||!pending)return;pending=false;
+  const action=()=>{pending=false;commit();};
+  let task;
+  try{task=navigator.locks&&navigator.locks.request?navigator.locks.request(key,{mode:'exclusive'},action):indexedLock(action);}catch(e){task=Promise.reject(e);}
+  Promise.resolve(task).catch(()=>{pending=false;notify(false,'安全に自動保存する機能を使えません。入力はこの画面に残ります。閉じる前に履歴をコピーまたは保存してください。');});
+ }
+ function inspect(){if(conflict)return;try{if(localStorage.getItem(key)!==baseline)failConflict();}catch(e){/* The next explicit save reports storage failures. */}}
+ if(window.addEventListener){window.addEventListener('storage',e=>{if(!e||e.key===key||e.key===null)inspect();});window.addEventListener('focus',inspect);}
+ return {
+  read(){baseline=localStorage.getItem(key);if(baseline)try{const m=JSON.parse(baseline).storageRevision;if(m&&m.generation){generation=m.generation;revision=Number.isSafeInteger(m.revision)?m.revision:0;}}catch(e){}return baseline;},
+  save(){if(conflict){notify(false,conflictText);return;}pending=true;pump();},
+  reset(){inspect();if(conflict)return false;generation=token();revision=0;return true;},
+  isConflicted:()=>conflict
+ };
+}
+function learningHistoryView(getState,ids={}){
+ const $=id=>document.getElementById(ids[id]||id);let copied=null,shown=null,request=0;
+ // Ignore the persistence revision and transient Good timer, but include input and events.
+ const signature=()=>JSON.stringify(getState(),(k,v)=>['storageRevision','interfaceRevision','goodUntil','feedback','feedbackType'].includes(k)?undefined:v);
+ return {
+  changed(){const now=signature();if(copied!==null&&copied!==now)$('copyStatus').textContent='その後の記録があります。提出用には、もう一度履歴をコピーしてください。';if(shown!==null&&shown!==now&&$('recordStatus')){$('recordStatus').textContent='表示時点の記録です。その後の記録があります。「記録を更新」で最新にできます。';}},
+  beginCopy(){return {id:++request,signature:signature()};},
+  copied(snapshot){if(snapshot.id!==request)return false;copied=snapshot.signature;this.changed();return true;},
+  show(exportHistory){$('recordText').value=exportHistory();$('recordText').classList.remove('hidden');$('recordStatus').textContent='表示時点の記録です。「記録を更新」で最新にできます。';$('showRecord').textContent='記録を更新';shown=signature();},
+  reset(){request++;copied=null;shown=null;$('copyStatus').textContent='';if($('recordStatus'))$('recordStatus').textContent='';if($('showRecord'))$('showRecord').textContent='記録を表示';for(const id of ['recordText','copyFallback']){if($(id)){$(id).value='';$(id).classList.add('hidden');}}}
+ };
+}
+
+function learningCancelPending(state){
+ const visit=x=>{if(!x||typeof x!=='object')return;for(const k of Object.keys(x)){if(['events','evidence','completedTasks','completedProblems'].includes(k))continue;if(k==='goodUntil'||k==='autoAdvanceAt')x[k]=null;else visit(x[k]);}};visit(state);
+}
+function learningNewQuestion(){
+ const target=document.getElementById('questionPrompt')||document.querySelector('#exercise .question-prompt')||document.querySelector('#exercise .givens')||document.querySelector('main .givens')||document.getElementById('exercise');
+ if(target?.scrollIntoView)target.scrollIntoView({block:'start',behavior:'instant'});
+}
+function learningKeepPosition(render){
+ const old=document.activeElement,id=old?.getAttribute?.('id'),x=window.scrollX||0,y=window.scrollY||0;
+ render();const el=id?document.getElementById(id):null;if(el?.focus)el.focus({preventScroll:true});if(window.scrollTo)window.scrollTo(x,y);
+}
+function learningReviewMessage(items,count){
+ return Array.from({length:count},(_,i)=>items[i]?.solved).every(Boolean)?'例題を確かめました。復習は通過条件には含めません。':'この復習段階を確認しました。未確認の段階が残っています。復習は通過条件には含めません。';
+}
+globalThis.LearningUX={
+ clearIssues(){document.querySelectorAll('input[aria-invalid]').forEach(el=>el.setAttribute('aria-invalid','false'));},
+ inputIssues(parser,key){
+  let fields=Array.from(document.querySelectorAll('input')).filter(el=>!el.disabled&&(el.getAttribute('data-answer')!==null||el.getAttribute('data-part')!==null||el.getAttribute('data-curve-input')!==null||el.getAttribute('data-component')!==null||/^(answer|tutorialAnswer)[12]$/.test(el.getAttribute('id')||'')));
+  if(key!==undefined)fields=fields.filter(el=>el.dataset.part===String(key)||el.getAttribute('id')?.startsWith('answer-'+key+'-'));
+  if(!fields.some(el=>el.value.trim()))return '';let first=null;for(const el of fields){let invalid;try{const r=parser(el.value);invalid=typeof r==='number'?!Number.isFinite(r):r.status!=='valid';}catch(e){invalid=true;}el.setAttribute('aria-invalid',String(invalid));if(invalid&&(!first||(!first.value&&el.value)))first=el;}
+  if(first){first.focus({preventScroll:true});if(first.scrollIntoView)first.scrollIntoView({block:'nearest',behavior:'instant'});return '「'+(first.getAttribute('aria-label')||'入力欄')+'」を確認してください。';}return '';
+ },
+ focusIssue(){const el=Array.from(document.querySelectorAll('input[aria-invalid]')).find(el=>el.getAttribute('aria-invalid')==='true'&&!el.disabled);if(!el)return false;el.focus({preventScroll:true});return true;},
+ revision:'2026-10-15.1',storage:learningStorage,history:learningHistoryView,cancelPending:learningCancelPending,newQuestion:learningNewQuestion,keepPosition:learningKeepPosition,reviewMessage:learningReviewMessage,
+ create(key,getState,notify,ids={}){
+  const storage=learningStorage(key,getState,notify),history=learningHistoryView(getState,ids);
+  return {...storage,changed:()=>history.changed(),show:exportHistory=>history.show(exportHistory),resetDisplay:()=>history.reset(),
+   async copy(exportHistory,fallback){
+    const snapshot=history.beginCopy(),text=exportHistory(),$=id=>document.getElementById(ids[id]||id);
+    try{if(!navigator.clipboard?.writeText)throw Error('clipboard');await navigator.clipboard.writeText(text);if(!history.copied(snapshot))return;$('copyStatus').textContent='履歴をコピーしました．メモ帳にペーストしよう！';$('copyFallback').classList.add('hidden');}
+    catch(e){if(!history.copied(snapshot))return;if(fallback&&fallback(text)){$('copyStatus').textContent='履歴をコピーしました．メモ帳にペーストしよう！';$('copyFallback').classList.add('hidden');history.changed();return;}const el=$('copyFallback');el.value=text;el.classList.remove('hidden');el.focus();el.select();$('copyStatus').textContent='下の欄をすべて選んでコピーしてください。テキスト保存も使えます。';}
+    history.changed();
+   }
+  };
+ }
+};
+
+
+(function(){'use strict';
+const C=InnerLesson,$=id=>document.getElementById(id),KEY='senkeiIa.2026.lesson5.innerproduct.app'+MODE+'.v1',esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),now=()=>new Date().toISOString();
+let timer=null,failedRead=false,state;
+const fresh=()=>({schema:1,version:C.VERSION,mode:MODE,phase:'example',indices:{example:0,practice:0},records:{},events:[],startedAt:now(),passedAt:null});state=fresh();
+const persistence=LearningUX.create(KEY,()=>state,(ok,msg)=>{$('storageNotice').textContent=ok?'':msg;$('storageNotice').className=ok?'':'notice';});
+try{const raw=persistence.read();if(raw){const x=JSON.parse(raw);if(x.schema!==1||x.version!==C.VERSION||x.mode!==MODE||!x.records||!Array.isArray(x.events)||!['example','practice'].includes(x.phase)||!x.indices||!['example','practice'].every(k=>Number.isInteger(x.indices[k])&&x.indices[k]>=0))throw Error('schema');state=x;}}
+catch(e){failedRead=true;$('storageNotice').textContent='保存記録を読めません。上書きを止めています。記録を確認してから初期化してください。';$('storageNotice').className='notice';}
+const bank=()=>state.phase==='example'?C.examples[MODE]:C.banks[MODE];const q=()=>bank()[state.indices[state.phase]%bank().length];
+function record(){const question=q();if(!state.records[question.key])state.records[question.key]={key:question.key,phase:state.phase,kind:question.kind,conditions:{a:question.a,b:question.b,A:question.A},stage:0,shownAt:now(),lastAttemptAt:null,drafts:{},correct:{},support:{},completedAt:null};return state.records[question.key];}
+function event(type,detail={}){state.events.push({type,at:now(),phase:state.phase,question:q().key,...detail});}
+function save(){if(!failedRead)persistence.save();persistence.changed();}
+function coverage(){return C.required[MODE].map(kind=>{const done=Object.values(state.records).filter(r=>r.phase==='practice'&&r.kind===kind&&r.completedAt);return{kind,complete:done.length>0,independent:done.some(r=>!Object.values(r.support).some(Boolean))};});}
+function pass(){if(!state.passedAt&&coverage().every(x=>x.complete&&x.independent)){state.passedAt=now();event('passed');}}
+function cancel(){clearTimeout(timer);timer=null;}
+function change(){cancel();render();save();$('questionPrompt').scrollIntoView({block:'start',behavior:'instant'});}
+function fmt(x){return typeof x==='number'?C.num(x):String(x);}
+function rational(v){for(let d=1;d<=100;d++)if(Math.abs(v*d-Math.round(v*d))<1e-9)return d===1?String(Math.round(v)):Math.round(v*d)+'/'+d;return C.num(v);}
+function answerText(f){if(f.options)return f.options.find(x=>x[0]===f.answer)[1];if(f.id==='height'||f.id==='signed'){const qq=q(),d=f.id==='height'?C.det(qq.a,qq.b):C.dot(qq.a,qq.b),n=C.dot(qq.a,qq.a);return Number.isInteger(Math.sqrt(n))?rational(f.answer):rational(d)+'/sqrt('+n+')';}return rational(f.answer);}
+function plot(a,b,projection,poly,title,bounds){const points=[[0,0],a,b,...(projection?[projection]:[]),...(poly||[])];let span=bounds||Math.max(3,...points.flat().map(Math.abs))+1;const K=135/span,X=x=>170+x*K,Y=y=>170-y*K;let s='<svg class="plot" viewBox="0 0 340 340" role="img" aria-label="'+esc(title)+'"><title>'+esc(title)+'</title><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="context-stroke"/></marker></defs>';
+ const step=span>10?Math.ceil(span/5):1;for(let i=-Math.floor(span);i<=span;i+=step){s+='<path d="M'+X(i)+' 30V310 M30 '+Y(i)+'H310" stroke="#dfe6e8" stroke-width=".6"/>';}
+ s+='<path d="M25 170H315 M170 25V315" stroke="#758a92"/><text x="318" y="165">x</text><text x="177" y="21">y</text><circle cx="170" cy="170" r="3" fill="#172e38"/><text x="151" y="187">O</text>';
+ s+='<text x="'+X(step)+'" y="188">'+step+'</text><text x="174" y="'+(Y(step)-4)+'">'+step+'</text>';
+ if(poly)s+='<polygon points="'+poly.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'" fill="#61b6a84d" stroke="#177a79" stroke-width="2"/>';
+ function arrow(p,color,dash=''){return '<path d="M170 170L'+X(p[0])+' '+Y(p[1])+'" fill="none" stroke="'+color+'" stroke-width="2.5" '+(dash?'stroke-dasharray="6 4"':'')+' marker-end="url(#arrow)"/>';}
+ s+=arrow(a,'#176caa')+arrow(b,'#ba5730');
+ if(projection){s+='<path d="M'+X(b[0])+' '+Y(b[1])+'L'+X(projection[0])+' '+Y(projection[1])+'" stroke="#7355a0" stroke-dasharray="5 4"/>';s+=arrow(projection,'#7051a1',true);}
+ // Labels at separate legend avoid coincident arrows giving overlapping names.
+ return s+'</svg><p class="legend">青の実線：'+(MODE===1?'a':'u')+' '+esc(C.coord(a))+' ／ 橙の実線：'+(MODE===1?'b':'v')+' '+esc(C.coord(b))+(projection?' ／ 紫の破線：正射影 p '+esc(C.coord(projection)):'')+'</p>';
+}
+function diagrams(){const qq=q(),r=record();if(MODE===1){const show=r.correct.px&&r.correct.py;return plot(qq.a,qq.b,show?C.projection(qq.a,qq.b):null,null,'a と b、および確認後の正射影');}if(MODE===2){const show=r.correct.area;return plot(qq.a,qq.b,null,show?[[0,0],qq.a,qq.a.map((x,i)=>x+qq.b[i]),qq.b]:null,'列ベクトル u と v。面積確認後に平行四辺形を表示');}
+ if(!r.correct.area||!r.correct.orientation)return '<p class="small">面積と向きの答えを確認すると、同じ縮尺で元の図形と像を比較できます。</p>';
+ const bird=[[0,0],[5,0],[5,2],[0,2]],im=bird.map(p=>[qq.a[0]*p[0]+qq.b[0]*p[1],qq.a[1]*p[0]+qq.b[1]*p[1]]),span=Math.max(3,...bird.flat().map(Math.abs),...im.flat().map(Math.abs))+1;
+ return '<div class="plots"><div><h3>元の図形（面積10）</h3>'+plot([1,0],[0,1],null,bird,'元の長方形',span)+'</div><div><h3>A による像</h3>'+plot(qq.a,qq.b,null,im,'変換後の長方形',span)+'</div></div><p class="small">2枚は同じ縮尺です。向きは、対応する頂点の順序で判断します。</p>';
+}
+function progress(){const labels={positive:MODE===2?'正の行列式':'正の場合',negative:MODE===2?'負の行列式':'負の場合',zero:'0の場合'};$('coverage').innerHTML='練習の累計：'+coverage().map(x=>'<span class="badge">'+labels[x.kind]+' '+(x.independent?'自力確認済み':x.complete?'支援付き完成':'未確認')+'</span>').join(' ')+'<br><span class="small">各種類を別の数値で1題ずつ確認します。例題は通過数に含めません。解説を使った種類は別の類題で確認できます。授業内に全部を終えることは必須ではありません。</span>'+(state.passedAt?'<p class="correct">練習の通過条件を満たしました。現在の問題の完成とは別の累計です。</p>':'');}
+function render(){const qq=q(),r=record(),st=qq.stages[r.stage];$('goal').textContent=['','内積の計算と正射影を、講義の例題と類題で確かめます。','講義で導いた「90度回転→内積→高さ→行列式」を例題と類題で確かめます。','行列式の値を使い、面積・向き・逆行列の有無を例題と類題で確かめます。'][MODE];progress();
+ $('exercise').innerHTML=(state.phase==='example'&&bank().length>1?'<label>講義の例題を選ぶ <select id="exampleSelect">'+bank().map((x,i)=>'<option value="'+i+'" '+(state.indices.example===i?'selected':'')+'>'+['例題3：C（正の行列式）','例題3：B（負の行列式）','例題4：S（行列式0）'][i]+'</option>').join('')+'</select></label>':'')+'<div id="questionPrompt"><p class="small">'+(state.phase==='example'?'講義の例題':'類題練習')+' '+(state.indices[state.phase]%bank().length+1)+' ／ '+bank().length+'</p><h2>'+qq.title+'</h2><p class="givens">'+qq.givens+'</p><h3 class="stage">'+(r.stage+1)+' / '+qq.stages.length+'　'+st.title+'</h3><p>'+st.intro+'</p></div><div id="diagram">'+diagrams()+'</div><form id="form"><p class="small">分数は 3/2、根号は sqrt(5)、式は 3/sqrt(5)。Enterで次の欄へ、最後の欄で確認します。</p>'+st.fields.map(f=>'<div class="field"><label for="field-'+f.id+'">'+f.label+'</label>'+(f.options?'<select id="field-'+f.id+'" '+(r.correct[f.id]?'disabled':'')+'><option value="">選択してください</option>'+f.options.map(o=>'<option value="'+o[0]+'" '+(r.drafts[f.id]===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select>':'<input id="field-'+f.id+'" autocomplete="off" spellcheck="false" value="'+esc(r.drafts[f.id]||'')+'" '+(r.correct[f.id]?'disabled':'')+'>')+'<span id="feedback-'+f.id+'" class="feedback '+(r.correct[f.id]?'correct':'')+'">'+(r.correct[f.id]?'確認済み：'+esc(r.drafts[f.id]):'')+'</span></div>').join('')+'<div class="buttons"><button type="submit" id="check">答えを確認</button><button type="button" id="hint" class="secondary">考え方のヒント</button><button type="button" id="reveal" class="secondary">この段階の解答・解説</button></div></form><div id="feedback" role="status" aria-live="polite"></div><div id="help"></div><div class="buttons"><button id="pause" class="secondary hidden">解説を読む（自動進行を止める）</button><button id="nextStage" class="hidden">次の段階へ</button><button id="nextProblem" class="hidden">別の類題へ</button></div>'+(r.stage>0?'<button id="previous" class="secondary">前の段階を見直す</button>':'');
+ if($('exampleSelect'))$('exampleSelect').onchange=e=>{state.indices.example=Number(e.target.value);change();};
+ st.fields.forEach((f,i)=>{const el=$('field-'+f.id);el.addEventListener('input',()=>{r.drafts[f.id]=el.value;save();});el.addEventListener('change',()=>{r.drafts[f.id]=el.value;save();});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&el.tagName==='INPUT'){e.preventDefault();const next=st.fields.slice(i+1).map(x=>$('field-'+x.id)).find(x=>!x.disabled);next?next.focus():submit();}});});
+ $('form').onsubmit=e=>{e.preventDefault();submit();};$('hint').onclick=()=>help(false);$('reveal').onclick=()=>help(true);$('pause').onclick=()=>{cancel();$('pause').classList.add('hidden');$('nextStage').classList.remove('hidden');};$('nextStage').onclick=()=>{if(st.fields.every(f=>r.correct[f.id])&&r.stage<qq.stages.length-1){r.stage++;change();}};$('nextProblem').onclick=nextProblem;if($('previous'))$('previous').onclick=()=>{r.stage--;change();};
+ if(st.fields.every(f=>r.correct[f.id]))finished(false);
+}
+function help(reveal){cancel();const r=record(),st=q().stages[r.stage];for(const f of st.fields)if(!r.correct[f.id])r.support[f.id]=reveal?'answer':'hint';event(reveal?'reveal':'hint',{stage:r.stage,fields:st.fields.filter(f=>!r.correct[f.id]).map(f=>f.id)});$('help').innerHTML='<div class="notice">'+st.fields.map(f=>'<p><b>'+f.label+'</b>：'+(reveal?esc(answerText(f))+'。':'')+f.hint+'</p>').join('')+(reveal?'<p>'+st.explain+'</p>':'')+'</div>';if(st.fields.every(f=>r.correct[f.id])&&r.stage<q().stages.length-1)$('nextStage').classList.remove('hidden');save();}
+function submit(){cancel();const r=record(),st=q().stages[r.stage],at=now(),results=[];for(const f of st.fields){if(r.correct[f.id])continue;const el=$('field-'+f.id),raw=el.value;r.drafts[f.id]=raw;const result=C.check(f,raw);results.push({field:f.id,raw,...result,support:r.support[f.id]||null});const out=$('feedback-'+f.id);if(result.status==='correct'){r.correct[f.id]=true;el.disabled=true;out.textContent='確認済み：'+(f.options?f.options.find(o=>o[0]===raw)[1]:raw);out.className='feedback correct';}else{out.textContent=result.status==='wrong'?'もう一度：'+f.hint:result.message;out.className='feedback '+(result.status==='wrong'?'wrong':'');}}
+ if(results.length){event('answer',{stage:r.stage,conditions:{a:q().a,b:q().b,A:q().A},results,elapsedSinceShownMs:Date.parse(at)-Date.parse(r.shownAt),elapsedSinceLastAttemptMs:r.lastAttemptAt?Date.parse(at)-Date.parse(r.lastAttemptAt):null});r.lastAttemptAt=at;}
+ $('diagram').innerHTML=diagrams();if(st.fields.every(f=>r.correct[f.id]))finished(true);else $('feedback').textContent='確認できた欄は残しています。未確認の欄だけ直してください。';save();}
+function finished(auto){const qq=q(),r=record(),st=qq.stages[r.stage];$('check').disabled=true;$('feedback').innerHTML='<p class="correct">Good! この段階を確認しました。</p><p>'+st.explain+'</p>';
+ if(r.stage<qq.stages.length-1){$('nextStage').classList.remove('hidden');if(auto){$('pause').classList.remove('hidden');timer=setTimeout(()=>{r.stage++;change();},1600);}}else{if(!r.completedAt){r.completedAt=now();event('complete',{kind:qq.kind,assisted:Object.values(r.support).some(Boolean)});pass();}progress();$('feedback').innerHTML+='<p>この大問は完成です。図と解説を読み比べてから進めます。</p>';$('nextProblem').classList.remove('hidden');}}
+function nextProblem(){cancel();state.phase='practice';const cov=coverage(),need=cov.find(x=>!x.independent);let idx;if(need)idx=C.banks[MODE].findIndex(qq=>qq.kind===need.kind&&!state.records[qq.key]?.completedAt);if(idx===undefined||idx<0)idx=(state.indices.practice+1)%C.banks[MODE].length;state.indices.practice=idx;event('navigate');change();}
+function exportHistory(){record();return '線形代数学 I-a 第5回｜内積と行列式｜アプリ'+MODE+' '+C.titles[MODE-1]+'\n版: '+C.VERSION+'\n作成: '+now()+'\n状態: '+(state.passedAt?'通過':'未完了')+'\n経過時間は休止・別タブ時間を含みます。自力確認は解答やヒントを開かずに正答した記録であり、理解や本人性の証明ではありません。\n'+JSON.stringify({...state,coverage:coverage()},null,2)+'\n--- 第5回 アプリ'+MODE+' 終わり ---\n';}
+$('example').onclick=()=>{state.phase='example';change();};$('practice').onclick=()=>{state.phase='practice';change();};
+$('copy').onclick=()=>persistence.copy(exportHistory);$('showRecord').onclick=()=>persistence.show(exportHistory);$('download').onclick=()=>{const blob=new Blob([exportHistory()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='Ia5-innerproduct-app'+MODE+'-history.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('reset').onclick=()=>$('resetConfirm').classList.remove('hidden');$('resetNo').onclick=()=>$('resetConfirm').classList.add('hidden');$('resetYes').onclick=()=>{if(!persistence.reset())return;cancel();state=fresh();failedRead=false;persistence.resetDisplay();$('resetConfirm').classList.add('hidden');change();};
+render();save();globalThis.IaInnerTest={exportHistory,key:KEY};
+})();
+
+</script></html>
