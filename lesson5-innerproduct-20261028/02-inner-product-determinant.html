@@ -178,8 +178,8 @@ function shapePanel(A,label,k=130){
  out+='<polygon data-shape="unit" points="'+coords(unit)+'" fill="#38a89d50" stroke="#087e75" stroke-width="2.5"/><polyline data-shape="bird" points="'+coords([...bird,bird[0]])+'" fill="none" stroke="#ad4d18" stroke-width="2" stroke-linejoin="round"/>';
  const xt=X(1)<220?1:-1,yt=Y(1)>40?1:-1;out+='<circle cx="'+X(0)+'" cy="'+Y(0)+'" r="2.5" fill="#263f45"/><text x="'+(X(0)-13)+'" y="'+(Y(0)+16)+'">O</text><text x="'+X(xt)+'" y="'+(Y(0)+16)+'" text-anchor="middle">'+xt+'</text><text x="'+(X(0)-6)+'" y="'+(Y(yt)+4)+'" text-anchor="end">'+yt+'</text></g>';return out;
 }
-function mapSvg(nodes,arrows,width,height,label,k){let out='<svg class="map-svg" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+'</title><defs><marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10" fill="#355a6c"/></marker></defs>';
- for(const d of arrows)out+='<path class="transform-arrow" d="'+d+'" fill="none" stroke="#355a6c" stroke-width="2" marker-end="url(#map-arrow)"/>';
+function mapSvg(nodes,arrows,width,height,label,k){const markerId='map-arrow-'+width+'-'+height;let out='<svg class="map-svg" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+'</title><defs><marker id="'+markerId+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10" fill="#355a6c"/></marker></defs>';
+ for(const d of arrows)out+='<path class="transform-arrow" d="'+d+'" fill="none" stroke="#355a6c" stroke-width="2" marker-end="url(#'+markerId+')"/>';
  for(const n of nodes)out+='<g transform="translate('+n.x+' '+n.y+')">'+shapePanel(n.A,n.label,k)+'</g>';return out+'</svg>';
 }
 function transformationDiagram(A,four=false){const I=[[1,0],[0,1]],source={label:'共通の変換前',A:I};let desktop,mobile;
