@@ -3,7 +3,7 @@
 </style><main><header><p class="small">線形代数学 I-a 第5回・内積と行列式　新カリキュラム版</p><h1>3. 面積・向き・逆行列</h1><p id="goal"></p><div id="storageNotice" role="status"></div></header><nav class="buttons"><button id="example" class="secondary">講義の例題</button><button id="practice">別の数値で練習する</button></nav><div id="coverage" class="progress"></div><section id="exercise"></section><section id="submission"><h2>学習記録</h2><p>途中でもコピー・保存できます。3本の記録を同じテキストにまとめて提出できます。ブラウザーへの保存と提出は別です。</p><div class="buttons"><button id="copy">履歴をコピー</button><button id="showRecord" class="secondary">記録を表示</button><button id="download" class="secondary">テキスト保存</button></div><p id="copyStatus" role="status"></p><p id="recordStatus" class="small"></p><textarea id="recordText" class="hidden" readonly aria-label="表示した学習記録"></textarea><textarea id="copyFallback" class="hidden" readonly aria-label="手動コピー用の学習記録"></textarea><details><summary>この版の記録を初期化する</summary><p>このアプリだけの記録を消します。以前の版・他のアプリの記録は消しません。必要なら先に保存してください。</p><button id="reset" class="secondary">初期化の確認へ</button><div id="resetConfirm" class="hidden"><p>この版の記録を本当に消しますか？</p><button id="resetYes">この版の記録を消す</button> <button id="resetNo" class="secondary">やめる</button></div></details></section></main><script>const MODE=3;
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.InnerLesson=api;})(globalThis,function(){
 'use strict';
-const VERSION='2026-10-28.innerproduct.2';
+const VERSION='2026-10-28.innerproduct.3';
 const titles=['角度・長さから内積へ','90度回転から行列式へ','面積・向き・逆行列'];
 function parse(raw){
  try{
@@ -131,7 +131,7 @@ globalThis.LearningUX={
 
 
 (function(){'use strict';
-const C=InnerLesson,$=id=>document.getElementById(id),KEY='senkeiIa.2026.lesson5.innerproduct.app'+MODE+'.v2',esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),now=()=>new Date().toISOString();
+const C=InnerLesson,$=id=>document.getElementById(id),KEY='senkeiIa.2026.lesson5.innerproduct.app'+MODE+'.v3',esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),now=()=>new Date().toISOString();
 let timer=null,failedRead=false,state;
 const fresh=()=>({schema:1,version:C.VERSION,mode:MODE,phase:'example',indices:{example:0,practice:0},records:{},events:[],startedAt:now(),passedAt:null});state=fresh();
 const persistence=LearningUX.create(KEY,()=>state,(ok,msg)=>{$('storageNotice').textContent=ok?'':msg;$('storageNotice').className=ok?'':'notice';});
